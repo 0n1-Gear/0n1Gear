@@ -37,11 +37,11 @@ contract('OniGear', (accounts) => {
 
         it('Add addresses to allow list', async () => {
             const amountOfGas = await contract.addToAllowList.estimateGas([accounts[0], accounts[1], accounts[2], accounts[3]], [1, 0, 3, 4]);
-            await contract.addToAllowList([accounts[0], accounts[1], accounts[2], accounts[3]], [1, 0, 3, 4]);
+            await contract.addToAllowList([accounts[0], accounts[1], accounts[2], accounts[3], accounts[4]], [1, 0, 3, 4,2]);
         });
     })
 
-    describe('minting 0n1 Gear', async () => {
+    describe('Allow list Minting 0n1 Gear', async () => {
 
         it('Mint from allow list before active', async () => {
             await truffleAssert.reverts(contract.claimAllowList(1, { from: accounts[0], value: web3.utils.toWei('0.01') }));
@@ -113,5 +113,56 @@ contract('OniGear', (accounts) => {
         it('Mint again after separate allow list events - allocation empty', async () => {
             await truffleAssert.reverts(contract.claimAllowList(1, { from: accounts[2], value: web3.utils.toWei('0.01') },), 'Not on Allow List');
         });
+        it('Mint where allow list allocation set to empty', async () => {
+            await truffleAssert.reverts(contract.claimAllowList(1, { from: accounts[1], value: web3.utils.toWei('0.01') },), 'Not on Allow List');
+        });
+    })
+    describe('Public Minting 0n1 Gear', async () => {
+
+        it('Confirm account not on allow list', async () => {
+            await truffleAssert.reverts(contract.claimAllowList(1, { from: accounts[6], value: web3.utils.toWei('0.01') }));
+        });
+        it('Mint whilst allow list still in place', async () => {
+            await truffleAssert.reverts(contract.purchase(1, { from: accounts[6], value: web3.utils.toWei('0.01') }));
+        });
+        it('Deactivate allow list', async () => {
+            await contract.setIsAllowListActive(false);
+        });
+        it('Check allow list minting finished', async () => {
+            await truffleAssert.reverts(contract.claimAllowList(1, { from: accounts[4], value: web3.utils.toWei('0.01') }));
+        })
+        it('Mint from public mint', async () => {
+            const result = await contract.purchase(1, { from: accounts[6], value: web3.utils.toWei('0.01') });
+            const totalSupply = await contract.totalSupply()
+            assert.equal(totalSupply, 9)
+            const event = result.logs[0].args
+            assert.equal(event.tokenId.toNumber(), 9, 'id is correct')
+            assert.equal(event.from, '0x0000000000000000000000000000000000000000', 'from is correct')
+            assert.equal(event.to, accounts[6], 'to is correct');
+        });
+        it('Mint multiple from public mint', async () => {
+            const result = await contract.purchase(4, { from: accounts[6], value: web3.utils.toWei('0.04') });
+            const totalSupply = await contract.totalSupply()
+            assert.equal(totalSupply, 13)
+            const event1 = result.logs[0].args
+            const event2 = result.logs[1].args
+            const event3 = result.logs[2].args
+            const event4 = result.logs[3].args
+            assert.equal(event1.tokenId.toNumber(), 10, 'id is correct')
+            assert.equal(event1.from, '0x0000000000000000000000000000000000000000', 'from is correct')
+            assert.equal(event1.to, accounts[6], 'to is correct')
+            assert.equal(event2.tokenId.toNumber(), 3, 'id is correct')
+            assert.equal(event2.from, '0x0000000000000000000000000000000000000000', 'from is correct')
+            assert.equal(event2.to, accounts[6], 'to is correct')
+            assert.equal(event3.tokenId.toNumber(), 4, 'id is correct')
+            assert.equal(event3.from, '0x0000000000000000000000000000000000000000', 'from is correct')
+            assert.equal(event3.to, accounts[6], 'to is correct')
+            assert.equal(event4.tokenId.toNumber(), 5, 'id is correct')
+            assert.equal(event4.from, '0x0000000000000000000000000000000000000000', 'from is correct')
+            assert.equal(event4.to, accounts[6], 'to is correct')
+        });      
+        it('Mint too many from public mint', async () => {
+            await truffleAssert.reverts(contract.purchase(10, { from: accounts[5], value: web3.utils.toWei('0.10') }));
+        });          
     })
 });

@@ -14,7 +14,21 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     uint256 public constant RESERVE = 233;
     uint256 public constant PURCHASE_LIMIT = 7;
     mapping(address => uint256) _allowList;
+    bool public activated;
+    bool public isAllowListActive;
+    uint256 public constant PRICE_ONI = 0.01 ether;
+    uint256 public constant PRICE_PUBLIC = 0.05 ether;
 
+
+    // Optimise all variables using bytes32 instead of strings. Can't seem to initialise an array of bytes32 so have to create them individually 
+    // and add to mapping at construction. Seems most gas efficient as contract gas heavy due to everything on chain
+    bytes32 private constant weaponCategory1 = "PRIMARY WEAPON";
+    bytes32 private constant weaponCategory2 = "SECONDARY WEAPON";
+    bytes32 private constant weaponsBytes1 = "Katana";
+    bytes32 private constant weaponsBytes2 = "Handgun";
+    bytes32 private constant weaponsBytes3 = "Poision Darts";
+
+    //Temporary array of categories until populate with real values.
     bytes32[] private categories = [
         weaponCategory1,
         weaponCategory2,
@@ -25,17 +39,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         weaponCategory1,
         weaponCategory2
     ];
-    bool public activated;
-    bool public isAllowListActive;
-    uint256 public constant PRICE_ONI = 0.01 ether;
-    uint256 public constant PRICE_PUBLIC = 0.05 ether;
-
-    bytes32 private constant weaponCategory1 = "PRIMARY WEAPON";
-    bytes32 private constant weaponCategory2 = "SECONDARY WEAPON";
-
-    bytes32 private constant weaponsBytes1 = "Katana";
-    bytes32 private constant weaponsBytes2 = "Handgun";
-    bytes32 private constant weaponsBytes3 = "Poision Darts";
 
     // mapping(string => bytes32[]) private lookups;
     mapping(bytes32 => bytes32[]) private lookups;
@@ -110,6 +113,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         override
         returns (string memory)
     {
+        //Optimise the tokenURI process by making a loop and using variables stored in mapping
         string[17] memory parts;
         parts[
             0
@@ -211,12 +215,13 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     function purchase(uint256 numberOfTokens) external payable nonReentrant {
         require(activated, "Contract inactive");
         require(!isAllowListActive, "Only from Allow List");
-        require(totalSupply() < ONI_MAX, "All tokens minted");
+        require(_tokenCount < ONI_MAX, "All tokens minted");
         require(
             _tokenCount + numberOfTokens <= ONI_PUBLIC,
             "Purchase > ONI_PUBLIC"
         );
         require(PRICE_ONI * numberOfTokens <= msg.value, "ETH insufficient");
+        require(numberOfTokens <= PURCHASE_LIMIT,"Too much On1Gear");
         for (uint256 i = 0; i < numberOfTokens; i++) {
             _tokenCount++;
             _safeMint(msg.sender, _tokenCount);
@@ -227,7 +232,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         require(activated, "Contract inactive");
         require(isAllowListActive, "Allow List inactive");
         require(_allowList[msg.sender] > 0, "Not on Allow List");
-        require(totalSupply() < ONI_MAX, "All tokens minted");
+        require(_tokenCount < ONI_MAX, "All tokens minted");
         require(numberOfTokens <= _allowList[msg.sender], "Too many tokens");
         require(
             _tokenCount + numberOfTokens <= ONI_PUBLIC,
@@ -243,7 +248,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
 
     constructor() ERC721("0N1 Gear", "0N1GEAR") Ownable() {
         lookups[categories[0]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
-        //TODO create static data as bytes
+        //TODO create static data as bytes?
         lookups[categories[1]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
         lookups[categories[2]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
         lookups[categories[3]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
