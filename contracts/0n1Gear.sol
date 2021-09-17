@@ -1,172 +1,58 @@
 pragma solidity ^0.8.6;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "base64-sol/base64.sol";
 
 contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
+    uint private _tokenCount;
 
-// @dev - copied from ON1 contract as poss variables
-uint256 public constant ONI_GIFT = 77;
-  uint256 public constant ONI_PUBLIC = 7_700;
-  uint256 public constant ONI_MAX = ONI_GIFT + ONI_PUBLIC;
-  uint256 public constant RESERVE = 233;
-  uint256 public constant PURCHASE_LIMIT = 7;
+    // @dev - copied from ON1 contract as poss variables
+    uint256 public constant ONI_GIFT = 77;
+    uint256 public constant ONI_PUBLIC = 7_700;
+    uint256 public constant ONI_MAX = ONI_GIFT + ONI_PUBLIC;
+    uint256 public constant RESERVE = 233;
+    uint256 public constant PURCHASE_LIMIT = 7;
+    mapping(address => uint256) _allowList;
 
-  //Consider a low mint price to maintain a community liquidity pool and stabilise the floor?
-  uint256 public constant PRICE_ONI = 0.01 ether;
-  //Consider offering a higher mint price for public if items not claimed. Again put eth into liquidity pool.
-  uint256 public constant PRICE_PUBLIC = 0.05 ether;
+    bool public activated;
+    bool public isAllowListActive;
+    uint256 public constant PRICE_ONI = 0.01 ether;
+    uint256 public constant PRICE_PUBLIC = 0.05 ether;
 
-//TODO - Determine best way to only allow Onis to mint.  Might need to do a snap shot into an allowed list. Might encourage HODLing?
+    bytes32 private weaponsBytes1 = '0x57617268616d6d6572';
+    bytes32 private weaponsBytes2 = '0x517561727465727374616666';
+    bytes32 private weaponsBytes3 = '0x426f6f6b';
 
-//TODO - Currently the properties are linked to an ID which is deterministically the same each time it is run and not random. Consider random
-// properties and storing on chain in a mapping? Should the properties use the ID of the new token as the seed, or some sort of ID from the 
-// original 0N1?
+    mapping(string => bytes32[]) private lookups;
 
-//TODO - update these
-    string[] private weapons = [
-        "Warhammer",
-        "Quarterstaff",
-        "Maul",
-        "Mace",
-        "Club",
-        "Katana",
-        "Falchion",
-        "Scimitar",
-        "Long Sword",
-        "Short Sword",
-        "Ghost Wand",
-        "Grave Wand",
-        "Bone Wand",
-        "Wand",
-        "Grimoire",
-        "Chronicle",
-        "Tome",
-        "Book"
-    ];
+function bytes32ToString(bytes32 _bytes32) public pure returns (string memory) {
+        uint8 i = 0;
+        while(i < 32 && _bytes32[i] != 0) {
+            i++;
+        }
+        bytes memory bytesArray = new bytes(i);
+        for (i = 0; i < 32 && _bytes32[i] != 0; i++) {
+            bytesArray[i] = _bytes32[i];
+        }
+        return string(bytesArray);
+    }
 
-    string[] private chestArmor = [
-        "Divine Robe",
-        "Silk Robe",
-        "Linen Robe",
-        "Robe",
-        "Shirt",
-        "Demon Husk",
-        "Dragonskin Armor",
-        "Studded Leather Armor",
-        "Hard Leather Armor",
-        "Leather Armor",
-        "Holy Chestplate",
-        "Ornate Chestplate",
-        "Plate Mail",
-        "Chain Mail",
-        "Ring Mail"
-    ];
+    //TODO - Currently the properties are linked to an ID which is deterministically the same each time it is run and not random. Consider random
+    // properties and storing on chain in a mapping? Should the properties use the ID of the new token as the seed, or some sort of ID from the
+    // original 0N1?
 
-    string[] private headArmor = [
-        "Ancient Helm",
-        "Ornate Helm",
-        "Great Helm",
-        "Full Helm",
-        "Helm",
-        "Demon Crown",
-        "Dragon's Crown",
-        "War Cap",
-        "Leather Cap",
-        "Cap",
-        "Crown",
-        "Divine Hood",
-        "Silk Hood",
-        "Linen Hood",
-        "Hood"
-    ];
+    string[] private categories = [
+        "WEAPONS",
+        "CHEST ARMOUR",
+        "HEAD ARMOUR",
+        "WAIST ARMOUR",
+        "FOOT_ARMOUR",
+        "HAND_ARMOUR",
+        "NECKLACES",
+        "RINGS"];
 
-    string[] private waistArmor = [
-        "Ornate Belt",
-        "War Belt",
-        "Plated Belt",
-        "Mesh Belt",
-        "Heavy Belt",
-        "Demonhide Belt",
-        "Dragonskin Belt",
-        "Studded Leather Belt",
-        "Hard Leather Belt",
-        "Leather Belt",
-        "Brightsilk Sash",
-        "Silk Sash",
-        "Wool Sash",
-        "Linen Sash",
-        "Sash"
-    ];
-
-    string[] private footArmor = [
-        "Holy Greaves",
-        "Ornate Greaves",
-        "Greaves",
-        "Chain Boots",
-        "Heavy Boots",
-        "Demonhide Boots",
-        "Dragonskin Boots",
-        "Studded Leather Boots",
-        "Hard Leather Boots",
-        "Leather Boots",
-        "Divine Slippers",
-        "Silk Slippers",
-        "Wool Shoes",
-        "Linen Shoes",
-        "Shoes"
-    ];
-
-    string[] private handArmor = [
-        "Holy Gauntlets",
-        "Ornate Gauntlets",
-        "Gauntlets",
-        "Chain Gloves",
-        "Heavy Gloves",
-        "Demon's Hands",
-        "Dragonskin Gloves",
-        "Studded Leather Gloves",
-        "Hard Leather Gloves",
-        "Leather Gloves",
-        "Divine Gloves",
-        "Silk Gloves",
-        "Wool Gloves",
-        "Linen Gloves",
-        "Gloves"
-    ];
-
-    string[] private necklaces = ["Necklace", "Amulet", "Pendant"];
-
-    string[] private rings = [
-        "Gold Ring",
-        "Silver Ring",
-        "Bronze Ring",
-        "Platinum Ring",
-        "Titanium Ring"
-    ];
-
-    string[] private suffixes = [
-        "of Power",
-        "of Giants",
-        "of Titans",
-        "of Skill",
-        "of Perfection",
-        "of Brilliance",
-        "of Enlightenment",
-        "of Protection",
-        "of Anger",
-        "of Rage",
-        "of Fury",
-        "of Vitriol",
-        "of the Fox",
-        "of Detection",
-        "of Reflection",
-        "of the Twins"
-    ];
+    string[] private suffixes = ["of Power", "of Giants", "of the Twins"];
 
     string[] private namePrefixes = [
         "Agony",
@@ -174,138 +60,25 @@ uint256 public constant ONI_GIFT = 77;
         "Armageddon",
         "Beast",
         "Behemoth",
-        "Blight",
-        "Blood",
-        "Bramble",
-        "Brimstone",
-        "Brood",
-        "Carrion",
-        "Cataclysm",
-        "Chimeric",
-        "Corpse",
-        "Corruption",
-        "Damnation",
-        "Death",
-        "Demon",
-        "Dire",
-        "Dragon",
-        "Dread",
-        "Doom",
-        "Dusk",
-        "Eagle",
-        "Empyrean",
-        "Fate",
-        "Foe",
-        "Gale",
-        "Ghoul",
-        "Gloom",
-        "Glyph",
-        "Golem",
-        "Grim",
-        "Hate",
-        "Havoc",
-        "Honour",
-        "Horror",
-        "Hypnotic",
-        "Kraken",
-        "Loath",
-        "Maelstrom",
-        "Mind",
-        "Miracle",
-        "Morbid",
-        "Oblivion",
-        "Onslaught",
-        "Pain",
-        "Pandemonium",
-        "Phoenix",
-        "Plague",
-        "Rage",
-        "Rapture",
-        "Rune",
-        "Skull",
-        "Sol",
-        "Soul",
-        "Sorrow",
-        "Spirit",
-        "Storm",
-        "Tempest",
-        "Torment",
-        "Vengeance",
-        "Victory",
-        "Viper",
-        "Vortex",
-        "Woe",
-        "Wrath",
-        "Light's",
-        "Shimmering"
+        "Blight"
     ];
 
-    string[] private nameSuffixes = [
-        "Bane",
-        "Root",
-        "Bite",
-        "Song",
-        "Roar",
-        "Grasp",
-        "Instrument",
-        "Glow",
-        "Bender",
-        "Shadow",
-        "Whisper",
-        "Shout",
-        "Growl",
-        "Tear",
-        "Peak",
-        "Form",
-        "Sun",
-        "Moon"
-    ];
+    string[] private nameSuffixes = ["Bane", "Root", "Moon"];
 
     function random(string memory input) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(input)));
     }
 
-    function getWeapon(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "WEAPON", weapons);
-    }
-
-    function getChest(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "CHEST", chestArmor);
-    }
-
-    function getShield(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "HEAD", headArmor);
-    }
-
-    function getWaist(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "WAIST", waistArmor);
-    }
-
-    function getFoot(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "FOOT", footArmor);
-    }
-
-    function getHand(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "HAND", handArmor);
-    }
-
-    function getNeck(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "NECK", necklaces);
-    }
-
-    function getRing(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "RING", rings);
-    }
-
-    function pluck(
-        uint256 tokenId,
-        string memory keyPrefix,
-        string[] memory sourceArray
-    ) internal view returns (string memory) {
+    function pluck(uint256 tokenId, string memory keyPrefix)
+        internal
+        view
+        returns (string memory)
+    {
+        bytes32[] memory sourceArray = lookups[keyPrefix];
         uint256 rand = random(
-            string(abi.encodePacked(keyPrefix, toString(tokenId)))
+            string(abi.encodePacked(keyPrefix, tokenId))
         );
-        string memory output = sourceArray[rand % sourceArray.length];
+        string memory output = bytes32ToString(sourceArray[rand % sourceArray.length]);
         uint256 greatness = rand % 21;
         if (greatness > 14) {
             output = string(
@@ -347,36 +120,17 @@ uint256 public constant ONI_GIFT = 77;
         parts[
             0
         ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
-
-        parts[1] = getWeapon(tokenId);
-
-        parts[2] = '</text><text x="10" y="40" class="base">';
-
-        parts[3] = getChest(tokenId);
-
-        parts[4] = '</text><text x="10" y="60" class="base">';
-
-        parts[5] = getShield(tokenId);
-
-        parts[6] = '</text><text x="10" y="80" class="base">';
-
-        parts[7] = getWaist(tokenId);
-
-        parts[8] = '</text><text x="10" y="100" class="base">';
-
-        parts[9] = getFoot(tokenId);
-
-        parts[10] = '</text><text x="10" y="120" class="base">';
-
-        parts[11] = getHand(tokenId);
-
-        parts[12] = '</text><text x="10" y="140" class="base">';
-
-        parts[13] = getNeck(tokenId);
-
-        parts[14] = '</text><text x="10" y="160" class="base">';
-
-        parts[15] = getRing(tokenId);
+        for (uint256 i = 1; i < 16; i += 2) {
+            uint256 position = i;
+            parts[position] = pluck(tokenId, categories[i - 1]);
+            parts[position + 1] = string(
+                abi.encodePacked(
+                    '</text><text x="10" y="',
+                    ((position + 1) * 20),
+                    '" class="base">'
+                )
+            );
+        }
 
         parts[16] = "</text></svg>";
 
@@ -412,8 +166,8 @@ uint256 public constant ONI_GIFT = 77;
                 string(
                     abi.encodePacked(
                         '{"name": "Bag #',
-                        toString(tokenId),
-                        '", "description": "Loot is randomized adventurer gear generated and stored on chain. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use Loot in any way you want.", "image": "data:image/svg+xml;base64,',
+                        tokenId,
+                        '", "description": "0N1 Gear is a derivative of Loot for 0N1 Force with randomized adventurer gear generated and stored on chain.", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(output)),
                         '"}'
                     )
@@ -428,42 +182,78 @@ uint256 public constant ONI_GIFT = 77;
     }
 
     function totalSupply() public view returns (uint256 supply) {
-        return _tokenIds.current();
+        return _tokenCount;
     }
 
-    function claim(uint256 oniId) public nonReentrant {
-        _tokenIds.increment();
-        require(oniId < ONI_MAX, "Token ID invalid");
-        _safeMint(_msgSender(), oniId);
-        _setTokenURI(oniId, tokenURI(oniId));
+    function purchase() external payable nonReentrant {
+        require(activated, "Contract inactive");
+        require(!isAllowListActive, "Only from Allow List");
+        require(totalSupply() < ONI_MAX, "All tokens minted");
+        _tokenCount++;
+        //TODO - public purchase
     }
 
-    function ownerClaim(uint256 tokenId) public nonReentrant onlyOwner {
-        require(tokenId > ONI_MAX && tokenId < (ONI_MAX + RESERVE), "Token ID invalid");
-        _safeMint(owner(), tokenId);
-    }
-
-    function toString(uint256 value) internal pure returns (string memory) {
-        // Inspired by OraclizeAPI's implementation - MIT license
-        // https://github.com/oraclize/ethereum-api/blob/b42146b063c7d6ee1358846c198246239e9360e8/oraclizeAPI_0.4.25.sol
-
-        if (value == 0) {
-            return "0";
+    function removeFromAllowList(address[] calldata addresses)
+        external
+        onlyOwner
+    {
+        for (uint256 i = 0; i < addresses.length; i++) {
+            require(addresses[i] != address(0), "Can't add address");
+            /// @dev We don't want to reset possible _allowListClaimed numbers.
+            _allowList[addresses[i]] = 0;
         }
-        uint256 temp = value;
-        uint256 digits;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        bytes memory buffer = new bytes(digits);
-        while (value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
-            value /= 10;
-        }
-        return string(buffer);
     }
 
-    constructor() ERC721("0N1 Gear", "0N1GEAR") Ownable() {}
+    function addToAllowList(
+        address[] calldata addresses,
+        uint256[] calldata allowedNumber
+    ) external onlyOwner {
+        for (uint256 i = 0; i < addresses.length; i++) {
+            require(addresses[i] != address(0), "Can't add address");
+            _allowList[addresses[i]] = allowedNumber[i];
+        }
+    }
+
+    function setIsActive(bool _isActive) external onlyOwner {
+        activated = _isActive;
+    }
+
+    function setIsAllowListActive(bool _isAllowListActive) external onlyOwner {
+        isAllowListActive = _isAllowListActive;
+    }
+
+    function claimAllowList(uint256 numberOfTokens) external payable {
+        require(activated, "Contract inactive");
+        require(isAllowListActive, "Allow List inactive");
+        require(_allowList[msg.sender] > 0, "Not on Allow List");
+        require(totalSupply() < ONI_MAX, "All tokens minted");
+        require(
+            numberOfTokens <= _allowList[msg.sender],
+            "Too many tokens"
+        );
+        require(
+            _tokenCount + numberOfTokens <= ONI_PUBLIC,
+            "Purchase > ONI_PUBLIC"
+        );
+        require(
+            PRICE_ONI * numberOfTokens <= msg.value,
+            "ETH insufficient"
+        );
+        for (uint256 i = 0; i < numberOfTokens; i++) {
+            _tokenCount++;
+            _allowList[msg.sender] = _allowList[msg.sender] - 1;
+            _safeMint(msg.sender, _tokenCount);
+        }
+    }
+
+    constructor() ERC721("0N1 Gear", "0N1GEAR") Ownable() {
+        lookups[categories[0]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
+        lookups[categories[1]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
+        lookups[categories[2]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
+        lookups[categories[3]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
+        lookups[categories[4]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
+        lookups[categories[5]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
+        lookups[categories[6]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
+        lookups[categories[7]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
+    }
 }
