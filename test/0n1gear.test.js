@@ -56,6 +56,8 @@ contract('OniGear', (accounts) => {
             const result = await contract.claimAllowList(1, { from: accounts[0], value: web3.utils.toWei('0.01') });
             const totalSupply = await contract.totalSupply()
             assert.equal(totalSupply, 1)
+            const tokenDetails = await contract.tokenURI("1");
+            console.log(tokenDetails)
             const event = result.logs[0].args
             assert.equal(event.tokenId.toNumber(), 1, 'id is correct')
             assert.equal(event.from, '0x0000000000000000000000000000000000000000', 'from is correct')
