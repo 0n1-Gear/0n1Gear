@@ -9,10 +9,9 @@ import "hardhat/console.sol";
 
 contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     // @dev - copied from ON1 contract as poss variables
-    uint256 public constant ONI_GIFT = 77;
+    uint256 public constant ONI_GIFT = 300;
     uint256 public constant ONI_PUBLIC = 7_700;
     uint256 public constant ONI_MAX = ONI_GIFT + ONI_PUBLIC;
-    uint256 public constant RESERVE = 233;
     uint256 public constant PURCHASE_LIMIT = 7;
     bool public activated;
     bool public isAllowListActive;
@@ -192,7 +191,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     function purchase(uint256 numberOfTokens) external payable nonReentrant {
         require(activated, "Contract inactive");
         require(!isAllowListActive, "Only from Allow List");
-        require(_tokenCount < ONI_MAX, "All tokens minted");
+        require(_tokenCount < ONI_PUBLIC, "All tokens minted");
         require(
             _tokenCount + numberOfTokens <= ONI_PUBLIC,
             "Purchase > ONI_PUBLIC"
@@ -202,7 +201,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         for (uint256 i = 0; i < numberOfTokens; i++) {
             uint256 idToMint;
             //Want to start any token IDs at 1, not 0
-            for (uint256 j = 1; j < ONI_MAX + 1; j++) {
+            for (uint256 j = 1; j < ONI_PUBLIC + 1; j++) {
                 if (!_claimedList[j]) {
                     idToMint = j;
                     //Add this here to ensure don't return the same value each time
@@ -237,7 +236,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     function claimAllTokens() external payable {
         require(activated, "Contract inactive");
         require(isAllowListActive, "Allow List inactive");
-        require(_tokenCount < ONI_MAX, "All tokens minted");
+        require(_tokenCount < ONI_PUBLIC, "All tokens minted");
         uint256[] memory tokensOwnedByAddress = getTokenIdsForOni(msg.sender);
 
         // Loop through all tokens available to this address and calculate how many are unclaimed.
@@ -268,7 +267,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     function claimToken(uint256 oniId) external payable {
         require(activated, "Contract inactive");
         require(isAllowListActive, "Allow List inactive");
-        require(_tokenCount < ONI_MAX, "All tokens minted");
+        require(_tokenCount < ONI_PUBLIC, "All tokens minted");
         require(PRICE_ONI <= msg.value, "ETH insufficient");
         bool alreadyClaimed = _claimedList[oniId];
         require(!alreadyClaimed, "Already minted");
@@ -285,6 +284,13 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         _tokenCount++;
         _claimedList[oniId] = true;
         _safeMint(msg.sender, oniId);
+    }
+    function ownerClaim(uint256 oniId) external onlyOwner {
+        require(activated, "Contract inactive");
+         require(oniId > ONI_PUBLIC && oniId <= ONI_MAX, "Token ID invalid");
+        _tokenCount++;
+        _claimedList[oniId] = true;
+        _safeMint(owner(), oniId);
     }
 
     constructor() ERC721("0N1 Gear", "0N1GEAR") Ownable() {

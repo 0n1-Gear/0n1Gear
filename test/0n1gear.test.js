@@ -296,7 +296,17 @@ contract("OniGear", (accounts) => {
       assert.equal(totalSupply, 11);      
     });   
   });
-  describe("Public Minting 0n1 Gear", async () => {
+  describe("Public Minting 0n1 Gear", async () => {      
+    it("Try and mint when contract inactive", async () => {
+        contract.setIsActive(false);
+        await expectRevert( contract.purchase(1, {
+            from: accounts[6],
+            value: web3.utils.toWei("0.01"),
+          }),'Contract inactive');
+      });
+      it("Set contract to active", async () => {
+        contract.setIsActive(true);
+      });
     it("Confirm account not on allow list", async () => {
         await expectRevert.unspecified(
         contract.claimAllTokens({
@@ -330,10 +340,8 @@ contract("OniGear", (accounts) => {
         value: web3.utils.toWei("0.01"),
       });
       const totalSupply = await contract.totalSupply();
-      console.log('total supply = ',totalSupply, result);
-    //   assert.equal(totalSupply, 9);
+      assert.equal(totalSupply, 12);
       const event = result.logs[0].args;
-      console.log('new token = ',event.tokenId);
       assert.equal(event.tokenId.toNumber(), 2, "id is correct");
       assert.equal(
         event.from,
@@ -348,7 +356,7 @@ contract("OniGear", (accounts) => {
         value: web3.utils.toWei("0.04"),
       });
       const totalSupply = await contract.totalSupply();
-    //   assert.equal(totalSupply, 13);
+      assert.equal(totalSupply, 16);
       const event1 = result.logs[0].args;
       const event2 = result.logs[1].args;
       const event3 = result.logs[2].args;
@@ -389,6 +397,54 @@ contract("OniGear", (accounts) => {
           value: web3.utils.toWei("0.10"),
         }),'Too much On1Gear'
       );
+    });
+  });
+  describe("Owner Minting 0n1 Gear", async () => {
+    it("Try and mint when contract inactive", async () => {
+        contract.setIsActive(false);
+        await expectRevert( contract.ownerClaim(7778),'Contract inactive');
+      });
+      it("Set contract to active", async () => {
+        contract.setIsActive(true);
+      });
+    it("Attempt private mint when not owner", async () => {
+        await expectRevert(
+        contract.ownerClaim(7778, {from:accounts[8]}),'Ownable: caller is not the owner'
+      );
+    });    
+    it("Attempt private mint ID too low", async () => {
+        await expectRevert(contract.ownerClaim(7700),'Token ID invalid'
+      );
+    });   
+    it("Attempt private mint ID too high", async () => {
+        await expectRevert(contract.ownerClaim(8001),'Token ID invalid'
+      );
+    });      
+    it("Private mint lowest ID", async () => {
+      const result = await contract.ownerClaim(7778);
+      const event = result.logs[0].args;
+      assert.equal(event.tokenId.toNumber(), 7778, "id is correct");
+      assert.equal(
+        event.from,
+        "0x0000000000000000000000000000000000000000",
+        "from is correct"
+      );
+      assert.equal(event.to, accounts[0], "to is correct");
+      const totalSupply = await contract.totalSupply();
+      assert.equal(totalSupply, 17);
+    });
+    it("Private mint highest ID", async () => {
+      const result = await contract.ownerClaim(8000);
+      const event = result.logs[0].args;
+      assert.equal(event.tokenId.toNumber(), 8000, "id is correct");
+      assert.equal(
+        event.from,
+        "0x0000000000000000000000000000000000000000",
+        "from is correct"
+      );
+      assert.equal(event.to, accounts[0], "to is correct");
+      const totalSupply = await contract.totalSupply();
+      assert.equal(totalSupply, 18);
     });
   });
 });
