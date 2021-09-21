@@ -128,7 +128,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         "of Void",
         "of the Shift",
         "of the Fallen",
-        "of the Favoured"
+        "of the Favoured",
         "of the Supreme",
         "of the Kami",
         "of the Siblings",
@@ -264,7 +264,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 return "";
             }
         } else {
-            if (greatness > 14) {
+            if (greatness > 12) {
                 output = string(
                     abi.encodePacked(
                         output,
