@@ -277,30 +277,12 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 string[2] memory name;
                 name[0] = namePrefixes[rand % namePrefixes.length];
                 name[1] = nameSuffixes[rand % nameSuffixes.length];
-                if (greatness == 19) {
-                    output = string(
-                        abi.encodePacked(
-                            '"',
-                            name[0],
-                            " ",
-                            name[1],
-                            '" ',
-                            output
-                        )
-                    );
-                } else {
-                    output = string(
-                        abi.encodePacked(
-                            '"',
-                            name[0],
-                            " ",
-                            name[1],
-                            '" ',
-                            output,
-                            " +1"
-                        )
-                    );
+                if (greatness > 19) {
+                    output = string(abi.encodePacked(output, " +1"));
                 }
+                output = string(
+                    abi.encodePacked(output, ', "', name[0], " ", name[1], '"')
+                );
             }
             return output;
         }
@@ -313,7 +295,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         returns (string memory)
     {
         //Optimise the tokenURI process by making a loop and using variables stored in mapping
-        string[17] memory parts;
+        string[16] memory parts;
         parts[
             0
         ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
@@ -329,7 +311,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             );
         }
 
-        parts[16] = "</text></svg>";
+        parts[15] = "</text></svg>";
 
         string memory output = string(
             abi.encodePacked(
@@ -352,8 +334,9 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 parts[11],
                 parts[12],
                 parts[13],
-                parts[14]            
-                          )
+                parts[14],
+                parts[15]
+            )
         );
 
         console.log(output);
