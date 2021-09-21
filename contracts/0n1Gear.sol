@@ -26,36 +26,209 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
 
     // Optimise all variables using bytes32 instead of strings. Can't seem to initialise an array of bytes32 so have to create them individually
     // and add to mapping at construction. Seems most gas efficient as contract gas heavy due to everything on chain
-    bytes32 private constant weaponCategory1 = "PRIMARY WEAPON";
-    bytes32 private constant weaponCategory2 = "SECONDARY WEAPON";
-    bytes32 private constant weaponsBytes1 = "Katana";
-    bytes32 private constant weaponsBytes2 = "Handgun";
-    bytes32 private constant weaponsBytes3 = "Poision Darts";
+    bytes32 private constant PRIMARY_WEAPON_CATEGORY = "PRIMARY WEAPON";
+    bytes32 private constant SECONDARY_WEAPON_CATEGORY = "SECONDARY WEAPON";
+    bytes32 private constant WAIST_CATEGORY = "WAIST";
+    bytes32 private constant HAND_CATEGORY = "HAND";
+    bytes32 private constant FEET_CATEGORY = "FEET";
+    bytes32 private constant RINGS_CATEGORY = "RINGS";
+    bytes32 private constant TITLE_CATEGORY = "TITLE";
 
-    //Temporary array of categories until populate with real values.
+    //POSSIBLE FOR ALL CATEGORIES
+    bytes32 private constant NONE = "<none>";
+
+    //MIXED PRIMARY OR SECONDARY (OR BOTH) WEAPONS
+    bytes32 private constant M_WEAPON_1 = "Katana";
+    bytes32 private constant M_WEAPON_2 = "Handgun";
+    bytes32 private constant M_WEAPON_3 = "Dagger";
+    bytes32 private constant M_WEAPON_4 = "Kunai";
+    bytes32 private constant M_WEAPON_5 = "Riot Gun";
+    bytes32 private constant M_WEAPON_6 = "Collapsible Baton";
+    bytes32 private constant M_WEAPON_7 = "Sai";
+
+    //PRIMARY WEAPONS
+    bytes32 private constant P_WEAPON_1 = "Naginata";
+    bytes32 private constant P_WEAPON_2 = "Quarterstafff";
+    bytes32 private constant P_WEAPON_3 = "Kukri";
+    bytes32 private constant P_WEAPON_4 = "Mech Glove";
+    bytes32 private constant P_WEAPON_5 = "Sledgehammer";
+    bytes32 private constant P_WEAPON_6 = "Whip";
+    bytes32 private constant P_WEAPON_7 = "Rope Dart";
+    bytes32 private constant P_WEAPON_8 = "Slingshot";
+    bytes32 private constant P_WEAPON_9 = "Longbow";
+    bytes32 private constant P_WEAPON_10 = "Crossbow";
+    bytes32 private constant P_WEAPON_11 = "Pipe";
+
+    //SECONDARY WEAPONS
+    bytes32 private constant S_WEAPON_1 = "Smoke grenades";
+    bytes32 private constant S_WEAPON_2 = "Tear gas canisters";
+    bytes32 private constant S_WEAPON_3 = "Mustard gas canisters";
+    bytes32 private constant S_WEAPON_4 = "Flashbang";
+    bytes32 private constant S_WEAPON_5 = "Neurogas grenades";
+    bytes32 private constant S_WEAPON_6 = "Micromolecular Wire";
+    bytes32 private constant S_WEAPON_7 = "Poision Darts";
+    bytes32 private constant S_WEAPON_8 = "Spider Drones";
+    bytes32 private constant S_WEAPON_9 = "Garrotte";
+
+    //WAIST ITEMS
+    bytes32 private constant WAIST_1 = "Tactical belt";
+    bytes32 private constant WAIST_2 = "Leg harness";
+    bytes32 private constant WAIST_3 = "Belt bag";
+    bytes32 private constant WAIST_4 = "Paracord";
+    bytes32 private constant WAIST_5 = "Obi";
+
+    //HANDS ITEMS
+    bytes32 private constant HANDS_SUFFIX = "Gloves";
+    bytes32 private constant HANDS_1 = "Leather";
+    bytes32 private constant HANDS_2 = "Surgical";
+    bytes32 private constant HANDS_3 = "Suede";
+    bytes32 private constant HANDS_4 = "Silk";
+    bytes32 private constant HANDS_5 = "Spiked";
+    bytes32 private constant HANDS_6 = "Metal/plate";
+    bytes32 private constant HANDS_7 = "Knuckled";
+    bytes32 private constant HANDS_8 = "Lace";
+    bytes32 private constant HANDS_9 = "Razor Claw";
+
+    //FEET ITEMS
+    bytes32 private constant FEET_1 = "Leather Boots";
+    bytes32 private constant FEET_2 = "Steel-toed Boots";
+    bytes32 private constant FEET_3 = "Spring/booster Shoes";
+    bytes32 private constant FEET_4 = "Jika-tabi";
+    bytes32 private constant FEET_5 = "Suede Shoes";
+    bytes32 private constant FEET_6 = "Slippers";
+
+    //RINGS
+    bytes32 private constant RING_SUFFIX = "Ring";
+    bytes32 private constant RING_1 = "Ao";
+    bytes32 private constant RING_2 = "Aka";
+    bytes32 private constant RING_3 = "Kiiro";
+
+    //SPECIAL TITLE
+    bytes32 private constant KONOE_SHIDAN = "Konoe Shidan";
+
     bytes32[] private categories = [
-        weaponCategory1,
-        weaponCategory2,
-        weaponCategory1,
-        weaponCategory2,
-        weaponCategory1,
-        weaponCategory2,
-        weaponCategory1,
-        weaponCategory2
+        PRIMARY_WEAPON_CATEGORY,
+        SECONDARY_WEAPON_CATEGORY,
+        WAIST_CATEGORY,
+        HAND_CATEGORY,
+        FEET_CATEGORY,
+        RINGS_CATEGORY,
+        TITLE_CATEGORY
     ];
 
-    string[] private suffixes = ["of Power", "of Giants", "of the Twins"];
+    string[] private suffixes = [
+        "of Style",
+        "of Spirit",
+        "of Strength",
+        "of Mastery",
+        "of Wisdom",
+        "of Harmony",
+        "of Aura",
+        "of Shadow",
+        "of Void",
+        "of the Shift",
+        "of the Fallen",
+        "of the Favoured"
+        "of the Supreme",
+        "of the Kami",
+        "of the Siblings",
+        "of the Emperor"
+    ];
 
     string[] private namePrefixes = [
-        "Agony",
-        "Apocalypse",
-        "Armageddon",
-        "Beast",
-        "Behemoth",
-        "Blight"
+        "Abhorrent",
+        "Alluring",
+        "Ancient",
+        "Ashes",
+        "Blessed",
+        "Beaming",
+        "Baneful",
+        "Bloodthirsty",
+        "Barbaric",
+        "Brutal",
+        "Butcher",
+        "Calamity",
+        "Carnal",
+        "C4N4RY's",
+        "Ceaseless",
+        "Corporeal",
+        "Courage",
+        "Cryogenic",
+        "Damned",
+        "Dawn",
+        "D34TH's",
+        "Dishonored",
+        "Divine",
+        "Dusk",
+        "Dreadful",
+        "Eery",
+        "Eldritch",
+        "Enigma",
+        "Forgotten",
+        "Frost",
+        "Ghost",
+        "Glory",
+        "Gnarled",
+        "God",
+        "Grace",
+        "Heartrending",
+        "Horror",
+        "Hex",
+        "Howling",
+        "Ilussive",
+        "Lethal",
+        "Malice",
+        "Massacre",
+        "Mirage",
+        "Nameless",
+        "Nightfall",
+        "Nightmare",
+        "Nirvana",
+        "Nemesis",
+        "Nether",
+        "Oath",
+        "Peace",
+        "Purgatory",
+        "Prophecy",
+        "Phantom",
+        "Thunder",
+        "Silent",
+        "Phantom",
+        "Luminous",
+        "Awakened",
+        "Iridescent",
+        "Aura",
+        "Syndicate",
+        "R0S3's"
+        "J3ST3R's",
+        "WR1T3R's",
+        "M33Kasa's",
+        "L1NK's"
     ];
 
-    string[] private nameSuffixes = ["Bane", "Root", "Moon"];
+    string[] private nameSuffixes = [
+        "Grasp",
+        "Whisper",
+        "Shadow",
+        "Torment",
+        "Will",
+        "Tears",
+        "Calling",
+        "Sun",
+        "Moon",
+        "Despair",
+        "Song",
+        "Pursuit",
+        "Rage",
+        "Lullaby",
+        "Dream",
+        "Kiss",
+        "Lust",
+        "Beacon",
+        "Binder",
+        "Remorse",
+        "Delusion"
+    ];
 
     function random(string memory input) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(input)));
@@ -72,34 +245,65 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             abi.encodePacked(sourceArray[rand % sourceArray.length])
         );
         uint256 greatness = rand % 21;
-        if (greatness > 14) {
-            output = string(
-                abi.encodePacked(output, " ", suffixes[rand % suffixes.length])
-            );
+        console.log(
+            "greatness = ",
+            greatness,
+            string(abi.encodePacked(keyPrefix))
+        );
+        if (keyPrefix == HAND_CATEGORY) {
+            output = string(abi.encodePacked(output, " ", HANDS_SUFFIX));
         }
-        if (greatness >= 19) {
-            string[2] memory name;
-            name[0] = namePrefixes[rand % namePrefixes.length];
-            name[1] = nameSuffixes[rand % nameSuffixes.length];
-            if (greatness == 19) {
-                output = string(
-                    abi.encodePacked('"', name[0], " ", name[1], '" ', output)
-                );
+        if (keyPrefix == RINGS_CATEGORY) {
+            output = string(abi.encodePacked(output, " ", RING_SUFFIX));
+        }
+        //In this case, only return where max greatness
+        if (keyPrefix == TITLE_CATEGORY) {
+            if (greatness > 19) {
+                return string(abi.encodePacked(KONOE_SHIDAN));
             } else {
+                return "";
+            }
+        } else {
+            if (greatness > 14) {
                 output = string(
                     abi.encodePacked(
-                        '"',
-                        name[0],
-                        " ",
-                        name[1],
-                        '" ',
                         output,
-                        " +1"
+                        " ",
+                        suffixes[rand % suffixes.length]
                     )
                 );
             }
+            if (greatness >= 19) {
+                string[2] memory name;
+                name[0] = namePrefixes[rand % namePrefixes.length];
+                name[1] = nameSuffixes[rand % nameSuffixes.length];
+                if (greatness == 19) {
+                    output = string(
+                        abi.encodePacked(
+                            '"',
+                            name[0],
+                            " ",
+                            name[1],
+                            '" ',
+                            output
+                        )
+                    );
+                } else {
+                    output = string(
+                        abi.encodePacked(
+                            '"',
+                            name[0],
+                            " ",
+                            name[1],
+                            '" ',
+                            output,
+                            " +1"
+                        )
+                    );
+                }
+            }
+            return output;
         }
-        return output;
     }
 
     function tokenURI(uint256 tokenId)
@@ -113,7 +317,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         parts[
             0
         ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
-        for (uint256 i = 0; i < 8; i++) {
+        for (uint256 i = 0; i < 7; i++) {
             uint256 position = i * 2 + 1;
             parts[position] = pluck(tokenId, categories[i]);
             parts[position + 1] = string(
@@ -148,12 +352,11 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 parts[11],
                 parts[12],
                 parts[13],
-                parts[14],
-                parts[15],
-                parts[16]
-            )
+                parts[14]            
+                          )
         );
 
+        console.log(output);
         string memory json = Base64.encode(
             bytes(
                 string(
@@ -170,7 +373,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         output = string(
             abi.encodePacked("data:application/json;base64,", json)
         );
-
         return output;
     }
 
@@ -185,8 +387,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     function setIsAllowListActive(bool _isAllowListActive) external onlyOwner {
         isAllowListActive = _isAllowListActive;
     }
-
-    //TODO - add owner purchase function
 
     function purchase(uint256 numberOfTokens) external payable nonReentrant {
         require(activated, "Contract inactive");
@@ -214,7 +414,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         }
     }
 
-    function setOniContractAddress(address oniAddress) external {
+    function setOniContractAddress(address oniAddress) external onlyOwner {
         _oniAddress = oniAddress;
         _oniContract = IERC721Enumerable(_oniAddress);
     }
@@ -304,15 +504,67 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     }
 
     constructor() ERC721("0N1 Gear", "0N1GEAR") Ownable() {
-        lookups[categories[0]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
         //TODO create static data as bytes as more space efficient?
-        lookups[categories[1]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
-        lookups[categories[2]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
-        lookups[categories[3]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
-        lookups[categories[4]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
-        lookups[categories[5]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
-        lookups[categories[6]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
-        lookups[categories[7]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
+        lookups[categories[0]] = [
+            M_WEAPON_1,
+            M_WEAPON_2,
+            M_WEAPON_3,
+            M_WEAPON_4,
+            M_WEAPON_5,
+            M_WEAPON_6,
+            M_WEAPON_7,
+            P_WEAPON_1,
+            P_WEAPON_2,
+            P_WEAPON_3,
+            P_WEAPON_4,
+            P_WEAPON_5,
+            P_WEAPON_6,
+            P_WEAPON_7,
+            P_WEAPON_8,
+            P_WEAPON_9,
+            P_WEAPON_10,
+            P_WEAPON_11
+        ];
+        lookups[categories[1]] = [
+            S_WEAPON_1,
+            S_WEAPON_2,
+            S_WEAPON_3,
+            S_WEAPON_4,
+            S_WEAPON_5,
+            S_WEAPON_6,
+            S_WEAPON_7,
+            S_WEAPON_8,
+            S_WEAPON_9,
+            M_WEAPON_1,
+            M_WEAPON_2,
+            M_WEAPON_3,
+            M_WEAPON_4,
+            M_WEAPON_5,
+            M_WEAPON_6,
+            M_WEAPON_7
+        ];
+        lookups[categories[2]] = [WAIST_1, WAIST_2, WAIST_3, WAIST_4, WAIST_5];
+        lookups[categories[3]] = [
+            HANDS_1,
+            HANDS_2,
+            HANDS_3,
+            HANDS_4,
+            HANDS_5,
+            HANDS_6,
+            HANDS_7,
+            HANDS_8,
+            HANDS_9
+        ];
+        lookups[categories[4]] = [
+            FEET_1,
+            FEET_2,
+            FEET_3,
+            FEET_4,
+            FEET_5,
+            FEET_6
+        ];
+        lookups[categories[5]] = [RING_1, RING_2, RING_3];
+        lookups[categories[6]] = [KONOE_SHIDAN];
     }
 
     function toString(uint256 value) internal pure returns (string memory) {

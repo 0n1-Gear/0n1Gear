@@ -83,8 +83,6 @@ contract("OniGear", (accounts) => {
         "from is correct"
       );
       assert.equal(event.to, accounts[0], "to is correct");
-      const tokenDetails = await contract.tokenURI("99");
-      console.log(tokenDetails);
     });
     it("Mint again after allow list allocation empty", async () => {
       await expectRevert.unspecified(
