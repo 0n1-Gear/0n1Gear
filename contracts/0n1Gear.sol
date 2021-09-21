@@ -280,17 +280,27 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 break;
             }
         }
-        require(isOwned,"Not authorised");
+        require(isOwned, "Not authorised");
         _tokenCount++;
         _claimedList[oniId] = true;
         _safeMint(msg.sender, oniId);
     }
-    function ownerClaim(uint256 oniId) external onlyOwner {
+
+    function ownerClaim(uint256[] calldata oniIds) external onlyOwner {
         require(activated, "Contract inactive");
-         require(oniId > ONI_PUBLIC && oniId <= ONI_MAX, "Token ID invalid");
-        _tokenCount++;
-        _claimedList[oniId] = true;
-        _safeMint(owner(), oniId);
+        // Loop twice to validate entire transaction OK
+        for (uint256 i = 0; i < oniIds.length; i++) {
+            uint256 oniId = oniIds[i];
+            require(oniId > ONI_PUBLIC && oniId <= ONI_MAX, "Token ID invalid");
+            bool alreadyClaimed = _claimedList[oniId];
+            require(!alreadyClaimed, "Already minted");
+        }
+        for (uint256 i = 0; i < oniIds.length; i++) {
+            uint256 oniId = oniIds[i];
+            _tokenCount++;
+            _claimedList[oniId] = true;
+            _safeMint(owner(), oniId);
+        }
     }
 
     constructor() ERC721("0N1 Gear", "0N1GEAR") Ownable() {
