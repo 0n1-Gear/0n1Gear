@@ -202,7 +202,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         for (uint256 i = 0; i < numberOfTokens; i++) {
             uint256 idToMint;
             //Want to start any token IDs at 1, not 0
-            for (uint256 j = 1; j < ONI_MAX+1; j++) {
+            for (uint256 j = 1; j < ONI_MAX + 1; j++) {
                 if (!_claimedList[j]) {
                     idToMint = j;
                     //Add this here to ensure don't return the same value each time
@@ -226,7 +226,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         returns (uint256[] memory tokenIds)
     {
         uint256 numberOfOnis = _oniContract.balanceOf(owner);
-        require(numberOfOnis > 0, "No Tokens found to mint");
+        require(numberOfOnis > 0, "No Tokens to mint");
         uint256[] memory tokenIdsToReturn = new uint256[](numberOfOnis);
         for (uint256 i = 0; i < numberOfOnis; i++) {
             tokenIdsToReturn[i] = _oniContract.tokenOfOwnerByIndex(owner, i);
@@ -263,6 +263,28 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 _safeMint(msg.sender, tokenId);
             }
         }
+    }
+
+    function claimToken(uint256 oniId) external payable {
+        require(activated, "Contract inactive");
+        require(isAllowListActive, "Allow List inactive");
+        require(_tokenCount < ONI_MAX, "All tokens minted");
+        require(PRICE_ONI <= msg.value, "ETH insufficient");
+        bool alreadyClaimed = _claimedList[oniId];
+        require(!alreadyClaimed, "Already minted");
+        uint256[] memory tokensOwnedByAddress = getTokenIdsForOni(msg.sender);
+        bool isOwned = false;
+        for (uint256 j = 0; j < tokensOwnedByAddress.length; j++) {
+            uint256 oniToMatch = tokensOwnedByAddress[j];
+            if (oniToMatch == oniId) {
+                isOwned = true;
+                break;
+            }
+        }
+        require(isOwned,"Not authorised");
+        _tokenCount++;
+        _claimedList[oniId] = true;
+        _safeMint(msg.sender, oniId);
     }
 
     constructor() ERC721("0N1 Gear", "0N1GEAR") Ownable() {
