@@ -245,11 +245,11 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             abi.encodePacked(sourceArray[rand % sourceArray.length])
         );
         uint256 greatness = rand % 21;
-        console.log(
-            "greatness = ",
-            greatness,
-            string(abi.encodePacked(keyPrefix))
-        );
+        // console.log(
+        //     "greatness = ",
+        //     greatness,
+        //     string(abi.encodePacked(keyPrefix))
+        // );
         if (keyPrefix == HAND_CATEGORY) {
             output = string(abi.encodePacked(output, " ", HANDS_SUFFIX));
         }
@@ -339,14 +339,14 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             )
         );
 
-        console.log(output);
+        // console.log(output);
         string memory json = Base64.encode(
             bytes(
                 string(
                     abi.encodePacked(
                         '{"name": "Gear #',
                         tokenId,
-                        '", "description": "0N1 Gear is a derivative of Loot for 0N1 Force with randomized adventurer gear generated and stored on chain.", "image": "data:image/svg+xml;base64,',
+                        '", "description": "0N1 Gear is a derivative of Loot for 0N1 Force with randomized  gear generated and stored on chain.", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(output)),
                         '"}'
                     )
