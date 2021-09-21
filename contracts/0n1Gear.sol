@@ -1,26 +1,31 @@
 pragma solidity ^0.8.6;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "base64-sol/base64.sol";
+import "./mocks/OniMock.sol";
+import "hardhat/console.sol";
 
 contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
-    uint256 private _tokenCount;
-
     // @dev - copied from ON1 contract as poss variables
     uint256 public constant ONI_GIFT = 77;
     uint256 public constant ONI_PUBLIC = 7_700;
     uint256 public constant ONI_MAX = ONI_GIFT + ONI_PUBLIC;
     uint256 public constant RESERVE = 233;
     uint256 public constant PURCHASE_LIMIT = 7;
-    mapping(address => uint256) _allowList;
     bool public activated;
     bool public isAllowListActive;
     uint256 public constant PRICE_ONI = 0.01 ether;
     uint256 public constant PRICE_PUBLIC = 0.05 ether;
 
+    uint256 private _tokenCount;
+    address private _oniAddress;
+    IERC721Enumerable private _oniContract;
+    mapping(uint256 => bool) private _claimedList;
+    mapping(bytes32 => bytes32[]) private lookups;
 
-    // Optimise all variables using bytes32 instead of strings. Can't seem to initialise an array of bytes32 so have to create them individually 
+    // Optimise all variables using bytes32 instead of strings. Can't seem to initialise an array of bytes32 so have to create them individually
     // and add to mapping at construction. Seems most gas efficient as contract gas heavy due to everything on chain
     bytes32 private constant weaponCategory1 = "PRIMARY WEAPON";
     bytes32 private constant weaponCategory2 = "SECONDARY WEAPON";
@@ -39,15 +44,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         weaponCategory1,
         weaponCategory2
     ];
-
-    // mapping(string => bytes32[]) private lookups;
-    mapping(bytes32 => bytes32[]) private lookups;
-
-    function char(bytes memory b) internal pure returns (bytes memory c) {}
-
-    //TODO - Currently the properties are linked to an ID which is deterministically the same each time it is run and not random. Consider random
-    // properties and storing on chain in a mapping? Should the properties use the ID of the new token as the seed, or some sort of ID from the
-    // original 0N1?
 
     string[] private suffixes = ["of Power", "of Giants", "of the Twins"];
 
@@ -183,27 +179,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         return _tokenCount;
     }
 
-    function removeFromAllowList(address[] calldata addresses)
-        external
-        onlyOwner
-    {
-        for (uint256 i = 0; i < addresses.length; i++) {
-            require(addresses[i] != address(0), "Can't add address");
-            /// @dev We don't want to reset possible _allowListClaimed numbers.
-            _allowList[addresses[i]] = 0;
-        }
-    }
-
-    function addToAllowList(
-        address[] calldata addresses,
-        uint256[] calldata allowedNumber
-    ) external onlyOwner {
-        for (uint256 i = 0; i < addresses.length; i++) {
-            require(addresses[i] != address(0), "Can't add address");
-            _allowList[addresses[i]] = allowedNumber[i];
-        }
-    }
-
     function setIsActive(bool _isActive) external onlyOwner {
         activated = _isActive;
     }
@@ -211,6 +186,8 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     function setIsAllowListActive(bool _isAllowListActive) external onlyOwner {
         isAllowListActive = _isAllowListActive;
     }
+
+    //TODO - add owner purchase function
 
     function purchase(uint256 numberOfTokens) external payable nonReentrant {
         require(activated, "Contract inactive");
@@ -221,34 +198,76 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             "Purchase > ONI_PUBLIC"
         );
         require(PRICE_ONI * numberOfTokens <= msg.value, "ETH insufficient");
-        require(numberOfTokens <= PURCHASE_LIMIT,"Too much On1Gear");
+        require(numberOfTokens <= PURCHASE_LIMIT, "Too much On1Gear");
         for (uint256 i = 0; i < numberOfTokens; i++) {
+            uint256 idToMint;
+            //Want to start any token IDs at 1, not 0
+            for (uint256 j = 1; j < ONI_MAX+1; j++) {
+                if (!_claimedList[j]) {
+                    idToMint = j;
+                    //Add this here to ensure don't return the same value each time
+                    _claimedList[j] = true;
+                    break;
+                }
+            }
             _tokenCount++;
-            _safeMint(msg.sender, _tokenCount);
+            _safeMint(msg.sender, idToMint);
         }
     }
 
-    function claimAllowList(uint256 numberOfTokens) external payable {
+    function setOniContractAddress(address oniAddress) external {
+        _oniAddress = oniAddress;
+        _oniContract = IERC721Enumerable(_oniAddress);
+    }
+
+    function getTokenIdsForOni(address owner)
+        internal
+        view
+        returns (uint256[] memory tokenIds)
+    {
+        uint256 numberOfOnis = _oniContract.balanceOf(owner);
+        require(numberOfOnis > 0, "No Tokens found to mint");
+        uint256[] memory tokenIdsToReturn = new uint256[](numberOfOnis);
+        for (uint256 i = 0; i < numberOfOnis; i++) {
+            tokenIdsToReturn[i] = _oniContract.tokenOfOwnerByIndex(owner, i);
+        }
+        return tokenIdsToReturn;
+    }
+
+    function claimAllTokens() external payable {
         require(activated, "Contract inactive");
         require(isAllowListActive, "Allow List inactive");
-        require(_allowList[msg.sender] > 0, "Not on Allow List");
         require(_tokenCount < ONI_MAX, "All tokens minted");
-        require(numberOfTokens <= _allowList[msg.sender], "Too many tokens");
-        require(
-            _tokenCount + numberOfTokens <= ONI_PUBLIC,
-            "Purchase > ONI_PUBLIC"
-        );
-        require(PRICE_ONI * numberOfTokens <= msg.value, "ETH insufficient");
-        for (uint256 i = 0; i < numberOfTokens; i++) {
-            _tokenCount++;
-            _allowList[msg.sender] = _allowList[msg.sender] - 1;
-            _safeMint(msg.sender, _tokenCount);
+        uint256[] memory tokensOwnedByAddress = getTokenIdsForOni(msg.sender);
+
+        // Loop through all tokens available to this address and calculate how many are unclaimed.
+        // Removing items fom arrays in solidity isn't easy, hence not just mutating original array and removing taken elements.
+        // Also can't create a dynamic new array so in order to validate costs etc need to run the loop twice. :facepalm.
+
+        uint256 unclaimedOnis;
+        for (uint256 j = 0; j < tokensOwnedByAddress.length; j++) {
+            bool alreadyClaimed = _claimedList[tokensOwnedByAddress[j]];
+            if (!alreadyClaimed) {
+                unclaimedOnis++;
+            }
+        }
+        require(unclaimedOnis > 0, "No Tokens left to mint");
+        require(PRICE_ONI * unclaimedOnis <= msg.value, "ETH insufficient");
+
+        for (uint256 j = 0; j < tokensOwnedByAddress.length; j++) {
+            uint256 tokenId = tokensOwnedByAddress[j];
+            bool alreadyClaimed = _claimedList[tokenId];
+            if (!alreadyClaimed) {
+                _tokenCount++;
+                _claimedList[tokenId] = true;
+                _safeMint(msg.sender, tokenId);
+            }
         }
     }
 
     constructor() ERC721("0N1 Gear", "0N1GEAR") Ownable() {
         lookups[categories[0]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
-        //TODO create static data as bytes?
+        //TODO create static data as bytes as more space efficient?
         lookups[categories[1]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
         lookups[categories[2]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
         lookups[categories[3]] = [weaponsBytes1, weaponsBytes2, weaponsBytes3];
