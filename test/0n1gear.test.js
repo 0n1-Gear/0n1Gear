@@ -1,4 +1,4 @@
-const { assert } = require("chai");
+const { assert, expect } = require("chai");
 const { expectRevert } = require("@openzeppelin/test-helpers");
 
 const OniGear = artifacts.require("./OniGear.sol");
@@ -84,6 +84,18 @@ contract("OniGear", (accounts) => {
       );
       assert.equal(event.to, accounts[0], "to is correct");
     });
+    it("Check if claimed", async () => {
+        const result = await contract.isGearClaimed(99, {
+            from: accounts[0],
+          });
+          assert.isTrue(result);
+    });
+    it("Check if claimed, incorrect ID", async () => {
+        const result = await contract.isGearClaimed(100, {
+            from: accounts[0],
+          });
+          assert.isFalse(result);
+    });
     it("Mint again after allow list allocation empty", async () => {
       await expectRevert.unspecified(
         contract.claimAllTokens({
@@ -91,6 +103,24 @@ contract("OniGear", (accounts) => {
           value: web3.utils.toWei("0.01"),
         })
       );
+    });
+    it("Check multiple not claimed before mint", async () => {
+        const result1 = await contract.isGearClaimed(1, {
+            from: accounts[0],
+          });
+          const result2 = await contract.isGearClaimed(1000, {
+              from: accounts[0],
+            });
+            const result3 = await contract.isGearClaimed(3000, {
+                from: accounts[0],
+              });
+              const result4 = await contract.isGearClaimed(5600, {
+                  from: accounts[0],
+                });
+          assert.isFalse(result1);
+          assert.isFalse(result2);
+          assert.isFalse(result3);
+          assert.isFalse(result4);
     });
     it("Mint multiple from allow list", async () => {
       await mockContract.setOwnerOnis(accounts[3], [1, 1000, 3000, 5600]);
@@ -132,6 +162,24 @@ contract("OniGear", (accounts) => {
         "from is correct"
       );
       assert.equal(event4.to, accounts[3], "to is correct");
+    });
+    it("Check if multiple were claimed", async () => {
+        const result1 = await contract.isGearClaimed(1, {
+            from: accounts[0],
+          });
+          const result2 = await contract.isGearClaimed(1000, {
+              from: accounts[0],
+            });
+            const result3 = await contract.isGearClaimed(3000, {
+                from: accounts[0],
+              });
+              const result4 = await contract.isGearClaimed(5600, {
+                  from: accounts[0],
+                });
+          assert.isTrue(result1);
+          assert.isTrue(result2);
+          assert.isTrue(result3);
+          assert.isTrue(result4);
     });
     it("Mint again after multiple allow list allocation empty", async () => {
       await expectRevert.unspecified(

@@ -390,6 +390,10 @@ function getRandomGaussianNumbers(string memory seed) public pure returns (uint2
     function setIsAllowListActive(bool _isAllowListActive) external onlyOwner {
         isAllowListActive = _isAllowListActive;
     }
+    
+    function isGearClaimed(uint256 tokenId) external view returns (bool isClaimed){
+        return _claimedList[tokenId];
+    }
 
     function purchase(uint256 numberOfTokens) external payable nonReentrant {
         require(activated, "Contract inactive");
