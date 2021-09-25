@@ -514,20 +514,23 @@ contract("OniGear", (accounts) => {
       );
     });
   });
-  describe("Check outputs", async () => {
-    it("Look for double daggers", async () => {
-      let i = 1;
-      const result = await contract.tokenURI(i);
-      while (i < 8001) {
-        const result = await contract.tokenURI(i);
-        const base64decoded = Buffer.from(result.split(',')[1], 'base64').toString().trim();
-        const base64Image = base64decoded.split('base64,')[1]
-        const svg = Buffer.from(base64Image.split('"')[0], 'base64').toString();
-        if(svg.split('Katana').length-1 === 2){
-            console.log('found double dagger at ',i, svg);
-        }
-        i++;
-      }
-    });
-  });
+//   describe("Check outputs", async () => {
+//     it("Look for double daggers", async () => {
+//       let i = 1;
+//       const result = await contract.tokenURI(i);
+//       while (i < 1000) {
+//         const result = await contract.tokenURI(i);
+//         const base64decoded = Buffer.from(result.split(',')[1], 'base64').toString().trim();
+//         const base64Image = base64decoded.split('base64,')[1]
+//         const svg = Buffer.from(base64Image.split('"')[0], 'base64').toString();
+//         if(svg.split('Kinoe').length-1 === 1){
+//             console.log('found Kinoe Shidan dagger at ',i, svg);
+//         }
+//         // if(svg.split('Katana').length-1 === 2){
+//         //     console.log('found double dagger at ',i, svg);
+//         // }
+//         i++;
+//       }
+//     });
+//   });
 });

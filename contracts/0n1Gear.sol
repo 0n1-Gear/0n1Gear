@@ -230,21 +230,40 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         "Delusion"
     ];
 
-    function random(string memory input) internal pure returns (uint256) {
-        return uint256(keccak256(abi.encodePacked(input)));
+    function random(string memory seed, uint256 offset) internal pure returns (uint256) {
+        return uint8(uint256(keccak256(abi.encodePacked(seed, toString(offset)))));
     }
+function getRandomGaussianNumbers(string memory seed) public pure returns (uint256[8] memory) {
+        uint256[8] memory numbers;
+        for (uint8 i = 0; i < 8; ++i) {
+            int64 accumulator = 0;
+            for (uint8 j = 0; j < 16; ++j) {
+                uint8 offset = (i * 16) + j;
+                accumulator += int64(uint64(random(seed, offset)));
+            }
 
-    function pluck(uint256 tokenId, bytes32 keyPrefix)
+            accumulator *= 10000;
+            accumulator /= 16;
+            accumulator = accumulator - 1270000;
+            accumulator *= 10000;
+            accumulator /= 733235;
+            accumulator *= 8;
+            accumulator += 105000;
+            accumulator /= 10000;
+            numbers[i] = uint256(uint64(accumulator));
+        }
+        return numbers;
+}
+    function pluck(uint256 tokenId, bytes32 keyPrefix, uint greatness)
         internal
         view
         returns (string memory)
     {
         bytes32[] memory sourceArray = lookups[keyPrefix];
-        uint256 rand = random(string(abi.encodePacked(keyPrefix, tokenId)));
+        uint256 rand = random(string(abi.encodePacked(keyPrefix)),tokenId);
         string memory output = string(
             abi.encodePacked(sourceArray[rand % sourceArray.length])
         );
-        uint256 greatness = rand % 21;
         // console.log(
         //     "greatness = ",
         //     greatness,
@@ -258,13 +277,13 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         }
         //In this case, only return where max greatness
         if (keyPrefix == TITLE_CATEGORY) {
-            if (greatness > 19) {
+            if (greatness > 15) {
                 return string(abi.encodePacked(KONOE_SHIDAN));
             } else {
                 return "";
             }
         } else {
-            if (greatness > 12) {
+            if (greatness > 12 || greatness < 8) {
                 output = string(
                     abi.encodePacked(
                         output,
@@ -273,11 +292,11 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                     )
                 );
             }
-            if (greatness >= 19) {
+            if (greatness > 13 || greatness <7) {
                 string[2] memory name;
                 name[0] = namePrefixes[rand % namePrefixes.length];
                 name[1] = nameSuffixes[rand % nameSuffixes.length];
-                if (greatness > 19) {
+                if (greatness > 14 || greatness <6) {
                     output = string(abi.encodePacked(output, " +1"));
                 }
                 output = string(
@@ -294,6 +313,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         override
         returns (string memory)
     {
+        uint[8] memory greatnessArray = getRandomGaussianNumbers(string(abi.encodePacked(tokenId)));
         //Optimise the tokenURI process by making a loop and using variables stored in mapping
         string[16] memory parts;
         parts[
@@ -301,7 +321,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
         for (uint256 i = 0; i < 7; i++) {
             uint256 position = i * 2 + 1;
-            parts[position] = pluck(tokenId, categories[i]);
+            parts[position] = pluck(tokenId, categories[i], greatnessArray[i]);
             parts[position + 1] = string(
                 abi.encodePacked(
                     '</text><text x="10" y="',
