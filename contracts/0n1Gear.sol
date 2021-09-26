@@ -233,6 +233,15 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     function random(string memory seed, uint256 offset) internal pure returns (uint256) {
         return uint8(uint256(keccak256(abi.encodePacked(seed, toString(offset)))));
     }
+
+    
+// Gaussian generation with thanks to @syntro from site:
+// https://www.gaussianprotocol.io/
+// Twitter:
+// https://twitter.com/GaussianProto
+// Contract:
+// https://etherscan.io/address/0xdD301BB7734d0e269A614766c00509df735B254c
+
 function getRandomGaussianNumbers(string memory seed) public pure returns (uint256[8] memory) {
         uint256[8] memory numbers;
         for (uint8 i = 0; i < 8; ++i) {
