@@ -25,82 +25,82 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
 
     // Optimise all variables using bytes32 instead of strings. Can't seem to initialise an array of bytes32 so have to create them individually
     // and add to mapping at construction. Seems most gas efficient as contract gas heavy due to everything on chain
-    bytes32 private constant PRIMARY_WEAPON_CATEGORY = "PRIMARY WEAPON";
-    bytes32 private constant SECONDARY_WEAPON_CATEGORY = "SECONDARY WEAPON";
-    bytes32 private constant WAIST_CATEGORY = "WAIST";
-    bytes32 private constant HAND_CATEGORY = "HAND";
-    bytes32 private constant FEET_CATEGORY = "FEET";
-    bytes32 private constant RINGS_CATEGORY = "RINGS";
-    bytes32 private constant TITLE_CATEGORY = "TITLE";
+    bytes32 private PRIMARY_WEAPON_CATEGORY = "PRIMARY WEAPON";
+    bytes32 private SECONDARY_WEAPON_CATEGORY = "SECONDARY WEAPON";
+    bytes32 private WAIST_CATEGORY = "WAIST";
+    bytes32 private HAND_CATEGORY = "HAND";
+    bytes32 private FEET_CATEGORY = "FEET";
+    bytes32 private RINGS_CATEGORY = "RINGS";
+    bytes32 private TITLE_CATEGORY = "TITLE";
 
     //POSSIBLE FOR ALL CATEGORIES?
-    bytes32 private constant NONE = "<none>";
+    bytes32 private NONE = "<none>";
 
     //MIXED PRIMARY OR SECONDARY (OR BOTH) WEAPONS
-    bytes32 private constant M_WEAPON_1 = "Katana";
-    bytes32 private constant M_WEAPON_2 = "Handgun";
-    bytes32 private constant M_WEAPON_3 = "Dagger";
-    bytes32 private constant M_WEAPON_4 = "Kunai";
-    bytes32 private constant M_WEAPON_5 = "Riot Gun";
-    bytes32 private constant M_WEAPON_6 = "Collapsible Baton";
-    bytes32 private constant M_WEAPON_7 = "Sai";
+    bytes32 private M_WEAPON_1 = "Katana";
+    bytes32 private M_WEAPON_2 = "Handgun";
+    bytes32 private M_WEAPON_3 = "Dagger";
+    bytes32 private M_WEAPON_4 = "Kunai";
+    bytes32 private M_WEAPON_5 = "Riot Gun";
+    bytes32 private M_WEAPON_6 = "Collapsible Baton";
+    bytes32 private M_WEAPON_7 = "Sai";
 
     //PRIMARY WEAPONS
-    bytes32 private constant P_WEAPON_1 = "Naginata";
-    bytes32 private constant P_WEAPON_2 = "Quarterstafff";
-    bytes32 private constant P_WEAPON_3 = "Kukri";
-    bytes32 private constant P_WEAPON_4 = "Mech Glove";
-    bytes32 private constant P_WEAPON_5 = "Sledgehammer";
-    bytes32 private constant P_WEAPON_6 = "Whip";
-    bytes32 private constant P_WEAPON_7 = "Rope Dart";
-    bytes32 private constant P_WEAPON_8 = "Slingshot";
-    bytes32 private constant P_WEAPON_9 = "Longbow";
-    bytes32 private constant P_WEAPON_10 = "Crossbow";
-    bytes32 private constant P_WEAPON_11 = "Pipe";
+    bytes32 private P_WEAPON_1 = "Naginata";
+    bytes32 private P_WEAPON_2 = "Quarterstafff";
+    bytes32 private P_WEAPON_3 = "Kukri";
+    bytes32 private P_WEAPON_4 = "Mech Glove";
+    bytes32 private P_WEAPON_5 = "Sledgehammer";
+    bytes32 private P_WEAPON_6 = "Whip";
+    bytes32 private P_WEAPON_7 = "Rope Dart";
+    bytes32 private P_WEAPON_8 = "Slingshot";
+    bytes32 private P_WEAPON_9 = "Longbow";
+    bytes32 private P_WEAPON_10 = "Crossbow";
+    bytes32 private P_WEAPON_11 = "Pipe";
 
     //SECONDARY WEAPONS
-    bytes32 private constant S_WEAPON_1 = "Smoke grenades";
-    bytes32 private constant S_WEAPON_2 = "Tear gas canisters";
-    bytes32 private constant S_WEAPON_3 = "Mustard gas canisters";
-    bytes32 private constant S_WEAPON_4 = "Flashbang";
-    bytes32 private constant S_WEAPON_5 = "Neurogas grenades";
-    bytes32 private constant S_WEAPON_6 = "Micromolecular Wire";
-    bytes32 private constant S_WEAPON_7 = "Poision Darts";
-    bytes32 private constant S_WEAPON_8 = "Spider Drones";
-    bytes32 private constant S_WEAPON_9 = "Garrotte";
+    bytes32 private S_WEAPON_1 = "Smoke grenades";
+    bytes32 private S_WEAPON_2 = "Tear gas canisters";
+    bytes32 private S_WEAPON_3 = "Mustard gas canisters";
+    bytes32 private S_WEAPON_4 = "Flashbang";
+    bytes32 private S_WEAPON_5 = "Neurogas grenades";
+    bytes32 private S_WEAPON_6 = "Micromolecular Wire";
+    bytes32 private S_WEAPON_7 = "Poision Darts";
+    bytes32 private S_WEAPON_8 = "Spider Drones";
+    bytes32 private S_WEAPON_9 = "Garrotte";
 
     //WAIST ITEMS
-    bytes32 private constant WAIST_1 = "Tactical belt";
-    bytes32 private constant WAIST_2 = "Leg harness";
-    bytes32 private constant WAIST_3 = "Belt bag";
-    bytes32 private constant WAIST_4 = "Paracord";
-    bytes32 private constant WAIST_5 = "Obi";
+    bytes32 private WAIST_1 = "Tactical belt";
+    bytes32 private WAIST_2 = "Leg harness";
+    bytes32 private WAIST_3 = "Belt bag";
+    bytes32 private WAIST_4 = "Paracord";
+    bytes32 private WAIST_5 = "Obi";
 
     //HANDS ITEMS
-    bytes32 private constant HANDS_SUFFIX = "Gloves";
-    bytes32 private constant HANDS_1 = "Leather";
-    bytes32 private constant HANDS_2 = "Surgical";
-    bytes32 private constant HANDS_3 = "Suede";
-    bytes32 private constant HANDS_4 = "Silk";
-    bytes32 private constant HANDS_5 = "Spiked";
-    bytes32 private constant HANDS_6 = "Metal/plate";
-    bytes32 private constant HANDS_7 = "Knuckled";
-    bytes32 private constant HANDS_8 = "Lace";
-    bytes32 private constant HANDS_9 = "Razor Claw";
+    bytes32 private HANDS_SUFFIX = "Gloves";
+    bytes32 private HANDS_1 = "Leather";
+    bytes32 private HANDS_2 = "Surgical";
+    bytes32 private HANDS_3 = "Suede";
+    bytes32 private HANDS_4 = "Silk";
+    bytes32 private HANDS_5 = "Spiked";
+    bytes32 private HANDS_6 = "Metal/plate";
+    bytes32 private HANDS_7 = "Knuckled";
+    bytes32 private HANDS_8 = "Lace";
+    bytes32 private HANDS_9 = "Razor Claw";
 
     //FEET ITEMS
-    bytes32 private constant FEET_1 = "Leather Boots";
-    bytes32 private constant FEET_2 = "Steel-toed Boots";
-    bytes32 private constant FEET_3 = "Spring/booster Shoes";
-    bytes32 private constant FEET_4 = "Jika-tabi";
-    bytes32 private constant FEET_5 = "Suede Shoes";
-    bytes32 private constant FEET_6 = "Slippers";
+    bytes32 private FEET_1 = "Leather Boots";
+    bytes32 private FEET_2 = "Steel-toed Boots";
+    bytes32 private FEET_3 = "Spring/booster Shoes";
+    bytes32 private FEET_4 = "Jika-tabi";
+    bytes32 private FEET_5 = "Suede Shoes";
+    bytes32 private FEET_6 = "Slippers";
 
     //RINGS
-    bytes32 private constant RING_SUFFIX = "Ring";
-    bytes32 private constant RING_1 = "Ao";
-    bytes32 private constant RING_2 = "Aka";
-    bytes32 private constant RING_3 = "Kiiro";
+    bytes32 private RING_SUFFIX = "Ring";
+    bytes32 private RING_1 = "Ao";
+    bytes32 private RING_2 = "Aka";
+    bytes32 private RING_3 = "Kiiro";
 
     //SPECIAL TITLE
     bytes32 private constant KONOE_SHIDAN = "Konoe Shidan";
@@ -115,21 +115,21 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         TITLE_CATEGORY
     ];
 
-    bytes32 private constant SUFFIXES_1 = "of Style";
-    bytes32 private constant SUFFIXES_2 = "of Spirit";
-    bytes32 private constant SUFFIXES_3 = "of Strength";
-    bytes32 private constant SUFFIXES_4 = "of Hope";
-    bytes32 private constant SUFFIXES_5 = "of Warding";
-    bytes32 private constant SUFFIXES_6 = "of Skill";
-    bytes32 private constant SUFFIXES_7 = "of Fury";
-    bytes32 private constant SUFFIXES_8 = "of Lost Memories";
-    bytes32 private constant SUFFIXES_9 = "of the Ebony Door";
-    bytes32 private constant SUFFIXES_10 = "of the Fallen";
-    bytes32 private constant SUFFIXES_11 = "of the Favoured";
-    bytes32 private constant SUFFIXES_12 = "of the Supreme";
-    bytes32 private constant SUFFIXES_13 = "of the Kami";
-    bytes32 private constant SUFFIXES_14 = "of the Siblings";
-    bytes32 private constant SUFFIXES_15 = "of the Emperor";
+    bytes32 private SUFFIXES_1 = "of Style";
+    bytes32 private SUFFIXES_2 = "of Spirit";
+    bytes32 private SUFFIXES_3 = "of Strength";
+    bytes32 private SUFFIXES_4 = "of Hope";
+    bytes32 private SUFFIXES_5 = "of Warding";
+    bytes32 private SUFFIXES_6 = "of Skill";
+    bytes32 private SUFFIXES_7 = "of Fury";
+    bytes32 private SUFFIXES_8 = "of Lost Memories";
+    bytes32 private SUFFIXES_9 = "of the Ebony Door";
+    bytes32 private SUFFIXES_10 = "of the Fallen";
+    bytes32 private SUFFIXES_11 = "of the Favoured";
+    bytes32 private SUFFIXES_12 = "of the Supreme";
+    bytes32 private SUFFIXES_13 = "of the Kami";
+    bytes32 private SUFFIXES_14 = "of the Siblings";
+    bytes32 private SUFFIXES_15 = "of the Emperor";
 
     bytes32[] private suffixes = [
         SUFFIXES_1,
@@ -148,16 +148,16 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         SUFFIXES_14,
         SUFFIXES_15
     ];
-    bytes32 private constant PREFIXES_1 = "Fine";
-    bytes32 private constant PREFIXES_2 = "Ornate";
-    bytes32 private constant PREFIXES_3 = "Battlehardened";
-    bytes32 private constant PREFIXES_4 = "Blooded";
-    bytes32 private constant PREFIXES_5 = "Strong";
-    bytes32 private constant PREFIXES_6 = "Skill";
-    bytes32 private constant PREFIXES_7 = "Fury";
-    bytes32 private constant PREFIXES_8 = "Lost Memories";
-    bytes32 private constant PREFIXES_9 = "Ebony Door";
-    bytes32 private constant PREFIXES_10 = "Fallen";
+    bytes32 private PREFIXES_1 = "Fine";
+    bytes32 private PREFIXES_2 = "Ornate";
+    bytes32 private PREFIXES_3 = "Battlehardened";
+    bytes32 private PREFIXES_4 = "Blooded";
+    bytes32 private PREFIXES_5 = "Strong";
+    bytes32 private PREFIXES_6 = "Skill";
+    bytes32 private PREFIXES_7 = "Fury";
+    bytes32 private PREFIXES_8 = "Lost Memories";
+    bytes32 private PREFIXES_9 = "Ebony Door";
+    bytes32 private PREFIXES_10 = "Fallen";
 
     bytes32[] private prefixes = [
         PREFIXES_1,
@@ -172,47 +172,47 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         PREFIXES_10
     ];
 
-    bytes32 private constant NAME_PREFIX_1 = "J3ST3R's";
-    bytes32 private constant NAME_PREFIX_2 = "WR1T3R's";
-    bytes32 private constant NAME_PREFIX_3 = "M33Kasa's";
-    bytes32 private constant NAME_PREFIX_4 = "L1NK's";
-    bytes32 private constant NAME_PREFIX_5 = "C4N4RY's";
-    bytes32 private constant NAME_PREFIX_6 = "R0S3's";
-    bytes32 private constant NAME_PREFIX_7 = "D34TH's";
-    bytes32 private constant NAME_PREFIX_8 = "Nameless";
-    bytes32 private constant NAME_PREFIX_9 = "Illusive";
-    bytes32 private constant NAME_PREFIX_10 = "Awakened";
-    bytes32 private constant NAME_PREFIX_11 = "Forgotten";
-    bytes32 private constant NAME_PREFIX_12 = "Damned";
-    bytes32 private constant NAME_PREFIX_13 = "Dawn";
-    bytes32 private constant NAME_PREFIX_14 = "Dusk";
-    bytes32 private constant NAME_PREFIX_15 = "Fate";
-    bytes32 private constant NAME_PREFIX_16 = "Howling";
-    bytes32 private constant NAME_PREFIX_17 = "Brutal";
-    bytes32 private constant NAME_PREFIX_18 = "Corporeal";
-    bytes32 private constant NAME_PREFIX_19 = "Peace";
-    bytes32 private constant NAME_PREFIX_20 = "Chaos";
-    bytes32 private constant NAME_PREFIX_21 = "Thunder";
-    bytes32 private constant NAME_PREFIX_22 = "Phantom";
-    bytes32 private constant NAME_PREFIX_23 = "Oath";
-    bytes32 private constant NAME_PREFIX_24 = "Luminous";
-    bytes32 private constant NAME_PREFIX_25 = "Irredescent";
-    bytes32 private constant NAME_PREFIX_26 = "Forsaken";
-    bytes32 private constant NAME_PREFIX_27 = "Glory";
-    bytes32 private constant NAME_PREFIX_28 = "Plague";
-    bytes32 private constant NAME_PREFIX_29 = "Rebellious";
-    bytes32 private constant NAME_PREFIX_30 = "Ceaseless";
-    bytes32 private constant NAME_PREFIX_31 = "Dishonered";
-    bytes32 private constant NAME_PREFIX_32 = "Silent";
-    bytes32 private constant NAME_PREFIX_33 = "Fate";
-    bytes32 private constant NAME_PREFIX_34 = "Bound";
-    bytes32 private constant NAME_PREFIX_35 = "Divine";
-    bytes32 private constant NAME_PREFIX_36 = "Eerie";
-    bytes32 private constant NAME_PREFIX_37 = "Limitless";
-    bytes32 private constant NAME_PREFIX_38 = "Quantum";
-    bytes32 private constant NAME_PREFIX_39 = "Living";
-    bytes32 private constant NAME_PREFIX_40 = "Bestial";
-    bytes32 private constant NAME_PREFIX_41 = "Barbaric";
+    bytes32 private NAME_PREFIX_1 = "J3ST3R's";
+    bytes32 private NAME_PREFIX_2 = "WR1T3R's";
+    bytes32 private NAME_PREFIX_3 = "M33Kasa's";
+    bytes32 private NAME_PREFIX_4 = "L1NK's";
+    bytes32 private NAME_PREFIX_5 = "C4N4RY's";
+    bytes32 private NAME_PREFIX_6 = "R0S3's";
+    bytes32 private NAME_PREFIX_7 = "D34TH's";
+    bytes32 private NAME_PREFIX_8 = "Nameless";
+    bytes32 private NAME_PREFIX_9 = "Illusive";
+    bytes32 private NAME_PREFIX_10 = "Awakened";
+    bytes32 private NAME_PREFIX_11 = "Forgotten";
+    bytes32 private NAME_PREFIX_12 = "Damned";
+    bytes32 private NAME_PREFIX_13 = "Dawn";
+    bytes32 private NAME_PREFIX_14 = "Dusk";
+    bytes32 private NAME_PREFIX_15 = "Fate";
+    bytes32 private NAME_PREFIX_16 = "Howling";
+    bytes32 private NAME_PREFIX_17 = "Brutal";
+    bytes32 private NAME_PREFIX_18 = "Corporeal";
+    bytes32 private NAME_PREFIX_19 = "Peace";
+    bytes32 private NAME_PREFIX_20 = "Chaos";
+    bytes32 private NAME_PREFIX_21 = "Thunder";
+    bytes32 private NAME_PREFIX_22 = "Phantom";
+    bytes32 private NAME_PREFIX_23 = "Oath";
+    bytes32 private NAME_PREFIX_24 = "Luminous";
+    bytes32 private NAME_PREFIX_25 = "Irredescent";
+    bytes32 private NAME_PREFIX_26 = "Forsaken";
+    bytes32 private NAME_PREFIX_27 = "Glory";
+    bytes32 private NAME_PREFIX_28 = "Plague";
+    bytes32 private NAME_PREFIX_29 = "Rebellious";
+    bytes32 private NAME_PREFIX_30 = "Ceaseless";
+    bytes32 private NAME_PREFIX_31 = "Dishonered";
+    bytes32 private NAME_PREFIX_32 = "Silent";
+    bytes32 private NAME_PREFIX_33 = "Fate";
+    bytes32 private NAME_PREFIX_34 = "Bound";
+    bytes32 private NAME_PREFIX_35 = "Divine";
+    bytes32 private NAME_PREFIX_36 = "Eerie";
+    bytes32 private NAME_PREFIX_37 = "Limitless";
+    bytes32 private NAME_PREFIX_38 = "Quantum";
+    bytes32 private NAME_PREFIX_39 = "Living";
+    bytes32 private NAME_PREFIX_40 = "Bestial";
+    bytes32 private NAME_PREFIX_41 = "Barbaric";
     bytes32[] private namePrefixes = [
         NAME_PREFIX_1,
         NAME_PREFIX_2,
@@ -256,27 +256,27 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         NAME_PREFIX_40,
         NAME_PREFIX_41
     ];
-    bytes32 private constant NAME_SUFFIX_1 = "Grasp";
-    bytes32 private constant NAME_SUFFIX_2 = "Whisper";
-    bytes32 private constant NAME_SUFFIX_3 = "Shadow";
-    bytes32 private constant NAME_SUFFIX_4 = "Torment";
-    bytes32 private constant NAME_SUFFIX_5 = "Will";
-    bytes32 private constant NAME_SUFFIX_6 = "Tears";
-    bytes32 private constant NAME_SUFFIX_7 = "Calling";
-    bytes32 private constant NAME_SUFFIX_8 = "Sun";
-    bytes32 private constant NAME_SUFFIX_9 = "Moon";
-    bytes32 private constant NAME_SUFFIX_10 = "Despair";
-    bytes32 private constant NAME_SUFFIX_11 = "Song";
-    bytes32 private constant NAME_SUFFIX_12 = "Pursuit";
-    bytes32 private constant NAME_SUFFIX_13 = "Rage";
-    bytes32 private constant NAME_SUFFIX_14 = "Lullaby";
-    bytes32 private constant NAME_SUFFIX_15 = "Dream";
-    bytes32 private constant NAME_SUFFIX_16 = "Kiss";
-    bytes32 private constant NAME_SUFFIX_17 = "Lust";
-    bytes32 private constant NAME_SUFFIX_18 = "Beacon";
-    bytes32 private constant NAME_SUFFIX_19 = "Binder";
-    bytes32 private constant NAME_SUFFIX_20 = "Remorse";
-    bytes32 private constant NAME_SUFFIX_21 = "Delusion";
+    bytes32 private NAME_SUFFIX_1 = "Grasp";
+    bytes32 private NAME_SUFFIX_2 = "Whisper";
+    bytes32 private NAME_SUFFIX_3 = "Shadow";
+    bytes32 private NAME_SUFFIX_4 = "Torment";
+    bytes32 private NAME_SUFFIX_5 = "Will";
+    bytes32 private NAME_SUFFIX_6 = "Tears";
+    bytes32 private NAME_SUFFIX_7 = "Calling";
+    bytes32 private NAME_SUFFIX_8 = "Sun";
+    bytes32 private NAME_SUFFIX_9 = "Moon";
+    bytes32 private NAME_SUFFIX_10 = "Despair";
+    bytes32 private NAME_SUFFIX_11 = "Song";
+    bytes32 private NAME_SUFFIX_12 = "Pursuit";
+    bytes32 private NAME_SUFFIX_13 = "Rage";
+    bytes32 private NAME_SUFFIX_14 = "Lullaby";
+    bytes32 private NAME_SUFFIX_15 = "Dream";
+    bytes32 private NAME_SUFFIX_16 = "Kiss";
+    bytes32 private NAME_SUFFIX_17 = "Lust";
+    bytes32 private NAME_SUFFIX_18 = "Beacon";
+    bytes32 private NAME_SUFFIX_19 = "Binder";
+    bytes32 private NAME_SUFFIX_20 = "Remorse";
+    bytes32 private NAME_SUFFIX_21 = "Delusion";
     bytes32[] private nameSuffixes = [
         NAME_SUFFIX_1,
         NAME_SUFFIX_2,
@@ -301,7 +301,11 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         NAME_SUFFIX_21
     ];
 
-    bytes32 startString = '{"name": "Gear # ';
+    bytes32 private SVG_PART_1 = '</text><text x="10" y="';
+    bytes32 private SVG_PART_2 = ' class="base">';
+    bytes32 private SVG_PART_3 = "</text></svg>";
+
+    bytes32 private OUTPUT_START_STRING = '{"name": "Gear # ';
 
     function random(string memory seed, uint256 offset)
         internal
@@ -422,7 +426,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         returns (string memory)
     {
         string memory stringTokenId = string(abi.encodePacked(tokenId));
-        console.log("string token id = ", tokenId);
+        // console.log("string token id = ", tokenId);
         uint256[8] memory greatnessArray = getRandomGaussianNumbers(
             stringTokenId
         );
@@ -436,14 +440,14 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             parts[position] = pluck(tokenId, categories[i], greatnessArray[i]);
             parts[position + 1] = string(
                 abi.encodePacked(
-                    '</text><text x="10" y="',
+                    SVG_PART_1,
                     toString((position + 2) * 20),
-                    '" class="base">'
+                    SVG_PART_2
                 )
             );
         }
 
-        parts[15] = "</text></svg>";
+        parts[15] = string(abi.encodePacked(SVG_PART_3));
 
         string memory output = string(
             abi.encodePacked(
@@ -476,7 +480,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             bytes(
                 string(
                     abi.encodePacked(
-                        startString,
+                        OUTPUT_START_STRING,
                         toString(tokenId),
                         '", "description": "0N1 Gear is a derivative of Loot for 0N1 Force with randomized gear generated and stored on chain.", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(output)),
