@@ -33,41 +33,29 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     bytes32 private RINGS_CATEGORY = "RINGS";
     bytes32 private TITLE_CATEGORY = "TITLE";
 
-    //POSSIBLE FOR ALL CATEGORIES?
-    bytes32 private NONE = "<none>";
-
     //MIXED PRIMARY OR SECONDARY (OR BOTH) WEAPONS
     bytes32 private M_WEAPON_1 = "Katana";
-    bytes32 private M_WEAPON_2 = "Handgun";
+    bytes32 private M_WEAPON_2 = "Revolver";
     bytes32 private M_WEAPON_3 = "Dagger";
-    bytes32 private M_WEAPON_4 = "Kunai";
-    bytes32 private M_WEAPON_5 = "Riot Gun";
-    bytes32 private M_WEAPON_6 = "Collapsible Baton";
-    bytes32 private M_WEAPON_7 = "Sai";
+    bytes32 private M_WEAPON_4 = "Sansetsukon";
+    bytes32 private M_WEAPON_5 = "Sai";
+    bytes32 private M_WEAPON_6 = "Axe";
 
     //PRIMARY WEAPONS
     bytes32 private P_WEAPON_1 = "Naginata";
-    bytes32 private P_WEAPON_2 = "Quarterstafff";
+    bytes32 private P_WEAPON_2 = "Longbow";
     bytes32 private P_WEAPON_3 = "Kukri";
-    bytes32 private P_WEAPON_4 = "Mech Glove";
-    bytes32 private P_WEAPON_5 = "Sledgehammer";
-    bytes32 private P_WEAPON_6 = "Whip";
-    bytes32 private P_WEAPON_7 = "Rope Dart";
-    bytes32 private P_WEAPON_8 = "Slingshot";
-    bytes32 private P_WEAPON_9 = "Longbow";
-    bytes32 private P_WEAPON_10 = "Crossbow";
-    bytes32 private P_WEAPON_11 = "Pipe";
+    bytes32 private P_WEAPON_4 = "Kanabo";
+    bytes32 private P_WEAPON_5 = "Sniper";
+    bytes32 private P_WEAPON_6 = "Odachi";
 
     //SECONDARY WEAPONS
-    bytes32 private S_WEAPON_1 = "Smoke grenades";
-    bytes32 private S_WEAPON_2 = "Tear gas canisters";
-    bytes32 private S_WEAPON_3 = "Mustard gas canisters";
-    bytes32 private S_WEAPON_4 = "Flashbang";
-    bytes32 private S_WEAPON_5 = "Neurogas grenades";
-    bytes32 private S_WEAPON_6 = "Micromolecular Wire";
-    bytes32 private S_WEAPON_7 = "Poision Darts";
-    bytes32 private S_WEAPON_8 = "Spider Drones";
-    bytes32 private S_WEAPON_9 = "Garrotte";
+    bytes32 private S_WEAPON_1 = "Smoke grenade";
+    bytes32 private S_WEAPON_2 = "Flame Talisman";
+    bytes32 private S_WEAPON_3 = "Spider Drones";
+    bytes32 private S_WEAPON_4 = "Tanto";
+    bytes32 private S_WEAPON_5 = "Kunai";
+    bytes32 private S_WEAPON_6 = "Kaiken";
 
     //WAIST ITEMS
     bytes32 private WAIST_1 = "Tactical belt";
@@ -83,10 +71,9 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     bytes32 private HANDS_3 = "Suede";
     bytes32 private HANDS_4 = "Silk";
     bytes32 private HANDS_5 = "Spiked";
-    bytes32 private HANDS_6 = "Metal/plate";
+    bytes32 private HANDS_6 = "Plated";
     bytes32 private HANDS_7 = "Knuckled";
     bytes32 private HANDS_8 = "Lace";
-    bytes32 private HANDS_9 = "Razor Claw";
 
     //FEET ITEMS
     bytes32 private FEET_1 = "Leather Boots";
@@ -119,17 +106,16 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     bytes32 private SUFFIXES_2 = "of Spirit";
     bytes32 private SUFFIXES_3 = "of Strength";
     bytes32 private SUFFIXES_4 = "of Hope";
-    bytes32 private SUFFIXES_5 = "of Warding";
-    bytes32 private SUFFIXES_6 = "of Skill";
-    bytes32 private SUFFIXES_7 = "of Fury";
-    bytes32 private SUFFIXES_8 = "of Lost Memories";
-    bytes32 private SUFFIXES_9 = "of the Ebony Door";
-    bytes32 private SUFFIXES_10 = "of the Fallen";
-    bytes32 private SUFFIXES_11 = "of the Favoured";
-    bytes32 private SUFFIXES_12 = "of the Supreme";
-    bytes32 private SUFFIXES_13 = "of the Kami";
-    bytes32 private SUFFIXES_14 = "of the Siblings";
-    bytes32 private SUFFIXES_15 = "of the Emperor";
+    bytes32 private SUFFIXES_5 = "of Skill";
+    bytes32 private SUFFIXES_6 = "of Fury";
+    bytes32 private SUFFIXES_7 = "of Lost Memories";
+    bytes32 private SUFFIXES_8 = "of the Ebony Door";
+    bytes32 private SUFFIXES_9 = "of the Fallen";
+    bytes32 private SUFFIXES_10 = "of the Favoured";
+    bytes32 private SUFFIXES_11 = "of the Supreme";
+    bytes32 private SUFFIXES_12 = "of the Kami";
+    bytes32 private SUFFIXES_13 = "of the Siblings";
+    bytes32 private SUFFIXES_14 = "of the Emperor";
 
     bytes32[] private suffixes = [
         SUFFIXES_1,
@@ -145,19 +131,19 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         SUFFIXES_11,
         SUFFIXES_12,
         SUFFIXES_13,
-        SUFFIXES_14,
-        SUFFIXES_15
+        SUFFIXES_14
     ];
-    bytes32 private PREFIXES_1 = "Fine";
-    bytes32 private PREFIXES_2 = "Ornate";
-    bytes32 private PREFIXES_3 = "Battlehardened";
-    bytes32 private PREFIXES_4 = "Blooded";
-    bytes32 private PREFIXES_5 = "Strong";
-    bytes32 private PREFIXES_6 = "Skill";
-    bytes32 private PREFIXES_7 = "Fury";
-    bytes32 private PREFIXES_8 = "Lost Memories";
-    bytes32 private PREFIXES_9 = "Ebony Door";
-    bytes32 private PREFIXES_10 = "Fallen";
+    bytes32 private PREFIXES_1 = "Ornate";
+    bytes32 private PREFIXES_2 = "Bloodied";
+    bytes32 private PREFIXES_3 = "Galvanized";
+    bytes32 private PREFIXES_4 = "Ancient";
+    bytes32 private PREFIXES_5 = "Obsidian";
+    bytes32 private PREFIXES_6 = "Haunted";
+    bytes32 private PREFIXES_7 = "Ethereal";
+    bytes32 private PREFIXES_8 = "Enchanted";
+    bytes32 private PREFIXES_9 = "Infernal";
+    bytes32 private PREFIXES_10 = "Celestial";
+    bytes32 private PREFIXES_11 = "Cursed";
 
     bytes32[] private prefixes = [
         PREFIXES_1,
@@ -169,7 +155,8 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         PREFIXES_7,
         PREFIXES_8,
         PREFIXES_9,
-        PREFIXES_10
+        PREFIXES_10,
+        PREFIXES_11
     ];
 
     bytes32 private NAME_PREFIX_1 = "J3ST3R's";
@@ -366,17 +353,17 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             abi.encodePacked(sourceArray[rand % sourceArray.length])
         );
         if (keyPrefix == HAND_CATEGORY) {
-            output = string(abi.encodePacked(output,SPACE, HANDS_SUFFIX));
+            output = string(abi.encodePacked(output, SPACE, HANDS_SUFFIX));
         }
         if (keyPrefix == RINGS_CATEGORY) {
-            output = string(abi.encodePacked(output,SPACE, RING_SUFFIX));
+            output = string(abi.encodePacked(output, SPACE, RING_SUFFIX));
         }
         //In this case, only return where max greatness
         if (keyPrefix == TITLE_CATEGORY) {
             if (greatness > 15) {
                 return string(abi.encodePacked(KONOE_SHIDAN));
             } else {
-                return '';
+                return "";
             }
         } else {
             if (greatness > 11 || greatness < 9) {
@@ -424,7 +411,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             return output;
         }
     }
-
 
     function tokenURI(uint256 tokenId)
         public
@@ -643,18 +629,12 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             M_WEAPON_4,
             M_WEAPON_5,
             M_WEAPON_6,
-            M_WEAPON_7,
             P_WEAPON_1,
             P_WEAPON_2,
             P_WEAPON_3,
             P_WEAPON_4,
             P_WEAPON_5,
-            P_WEAPON_6,
-            P_WEAPON_7,
-            P_WEAPON_8,
-            P_WEAPON_9,
-            P_WEAPON_10,
-            P_WEAPON_11
+            P_WEAPON_6
         ];
         lookups[categories[1]] = [
             S_WEAPON_1,
@@ -663,16 +643,12 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             S_WEAPON_4,
             S_WEAPON_5,
             S_WEAPON_6,
-            S_WEAPON_7,
-            S_WEAPON_8,
-            S_WEAPON_9,
             M_WEAPON_1,
             M_WEAPON_2,
             M_WEAPON_3,
             M_WEAPON_4,
             M_WEAPON_5,
-            M_WEAPON_6,
-            M_WEAPON_7
+            M_WEAPON_6
         ];
         lookups[categories[2]] = [WAIST_1, WAIST_2, WAIST_3, WAIST_4, WAIST_5];
         lookups[categories[3]] = [
@@ -683,8 +659,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             HANDS_5,
             HANDS_6,
             HANDS_7,
-            HANDS_8,
-            HANDS_9
+            HANDS_8
         ];
         lookups[categories[4]] = [
             FEET_1,
