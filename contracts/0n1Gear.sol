@@ -306,6 +306,12 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     bytes32 private SVG_PART_3 = "</text></svg>";
 
     bytes32 private OUTPUT_START_STRING = '{"name": "Gear # ';
+    bytes32 private JSON_STRING = "data:application/json;base64,";
+    bytes32 private BRACES = '"}';
+    bytes32 private SPACE = " ";
+    bytes32 private END_QUOTES = '"';
+    bytes32 private COMMA_START_QUOTES = ', "';
+    bytes32 private PLUS_ONE = " +1";
 
     function random(string memory seed, uint256 offset)
         internal
@@ -360,17 +366,17 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             abi.encodePacked(sourceArray[rand % sourceArray.length])
         );
         if (keyPrefix == HAND_CATEGORY) {
-            output = string(abi.encodePacked(output, " ", HANDS_SUFFIX));
+            output = string(abi.encodePacked(output,SPACE, HANDS_SUFFIX));
         }
         if (keyPrefix == RINGS_CATEGORY) {
-            output = string(abi.encodePacked(output, " ", RING_SUFFIX));
+            output = string(abi.encodePacked(output,SPACE, RING_SUFFIX));
         }
         //In this case, only return where max greatness
         if (keyPrefix == TITLE_CATEGORY) {
             if (greatness > 15) {
                 return string(abi.encodePacked(KONOE_SHIDAN));
             } else {
-                return "";
+                return '';
             }
         } else {
             if (greatness > 11 || greatness < 9) {
@@ -382,7 +388,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                     output = string(
                         abi.encodePacked(
                             prefixes[rand % prefixes.length],
-                            " ",
+                            SPACE,
                             output
                         )
                     );
@@ -391,7 +397,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                     output = string(
                         abi.encodePacked(
                             output,
-                            " ",
+                            SPACE,
                             suffixes[rand % suffixes.length]
                         )
                     );
@@ -401,16 +407,16 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                     name[0] = namePrefixes[rand % namePrefixes.length];
                     name[1] = nameSuffixes[rand % nameSuffixes.length];
                     if (greatness > 14 || greatness < 6) {
-                        output = string(abi.encodePacked(output, " +1"));
+                        output = string(abi.encodePacked(output, PLUS_ONE));
                     }
                     output = string(
                         abi.encodePacked(
                             output,
-                            ', "',
+                            COMMA_START_QUOTES,
                             name[0],
-                            " ",
+                            SPACE,
                             name[1],
-                            '"'
+                            END_QUOTES
                         )
                     );
                 }
@@ -418,6 +424,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             return output;
         }
     }
+
 
     function tokenURI(uint256 tokenId)
         public
@@ -484,14 +491,12 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                         toString(tokenId),
                         '", "description": "0N1 Gear is a derivative of Loot for 0N1 Force with randomized gear generated and stored on chain.", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(output)),
-                        '"}'
+                        BRACES
                     )
                 )
             )
         );
-        output = string(
-            abi.encodePacked("data:application/json;base64,", json)
-        );
+        output = string(abi.encodePacked(JSON_STRING, json));
         return output;
     }
 
