@@ -3,3 +3,4 @@ build
 node_modules
 cache
 coverage
+cache/solidity-files-cache.json
