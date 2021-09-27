@@ -14,7 +14,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     uint256 public constant PURCHASE_LIMIT = 7;
     bool public activated;
     bool public isAllowListActive;
-    uint256 public constant PRICE_ONI = 0.01 ether;
+    uint256 public constant PRICE_ONI = 0.025 ether;
     uint256 public constant PRICE_PUBLIC = 0.05 ether;
 
     uint256 private _tokenCount;
@@ -33,7 +33,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     bytes32 private constant RINGS_CATEGORY = "RINGS";
     bytes32 private constant TITLE_CATEGORY = "TITLE";
 
-    //POSSIBLE FOR ALL CATEGORIES
+    //POSSIBLE FOR ALL CATEGORIES?
     bytes32 private constant NONE = "<none>";
 
     //MIXED PRIMARY OR SECONDARY (OR BOTH) WEAPONS
@@ -301,6 +301,8 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         NAME_SUFFIX_21
     ];
 
+    bytes32 startString = '{"name": "Gear # ';
+
     function random(string memory seed, uint256 offset)
         internal
         pure
@@ -367,12 +369,12 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 return "";
             }
         } else {
-            //For weapons, add a prefix as well to the item
-            if (
-                keyPrefix == PRIMARY_WEAPON_CATEGORY ||
-                keyPrefix == SECONDARY_WEAPON_CATEGORY
-            ) {
-                if (greatness > 11 || greatness < 9) {
+            if (greatness > 11 || greatness < 9) {
+                //For weapons, add a prefix as well to the item
+                if (
+                    keyPrefix == PRIMARY_WEAPON_CATEGORY ||
+                    keyPrefix == SECONDARY_WEAPON_CATEGORY
+                ) {
                     output = string(
                         abi.encodePacked(
                             prefixes[rand % prefixes.length],
@@ -381,26 +383,33 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                         )
                     );
                 }
-            }
-            if (greatness > 12 || greatness < 8) {
-                output = string(
-                    abi.encodePacked(
-                        output,
-                        " ",
-                        suffixes[rand % suffixes.length]
-                    )
-                );
-            }
-            if (greatness > 13 || greatness < 7) {
-                bytes32[2] memory name;
-                name[0] = namePrefixes[rand % namePrefixes.length];
-                name[1] = nameSuffixes[rand % nameSuffixes.length];
-                if (greatness > 14 || greatness < 6) {
-                    output = string(abi.encodePacked(output, " +1"));
+                if (greatness > 12 || greatness < 8) {
+                    output = string(
+                        abi.encodePacked(
+                            output,
+                            " ",
+                            suffixes[rand % suffixes.length]
+                        )
+                    );
                 }
-                output = string(
-                    abi.encodePacked(output, ', "', name[0], " ", name[1], '"')
-                );
+                if (greatness > 13 || greatness < 7) {
+                    bytes32[2] memory name;
+                    name[0] = namePrefixes[rand % namePrefixes.length];
+                    name[1] = nameSuffixes[rand % nameSuffixes.length];
+                    if (greatness > 14 || greatness < 6) {
+                        output = string(abi.encodePacked(output, " +1"));
+                    }
+                    output = string(
+                        abi.encodePacked(
+                            output,
+                            ', "',
+                            name[0],
+                            " ",
+                            name[1],
+                            '"'
+                        )
+                    );
+                }
             }
             return output;
         }
@@ -412,8 +421,10 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         override
         returns (string memory)
     {
+        string memory stringTokenId = string(abi.encodePacked(tokenId));
+        console.log("string token id = ", tokenId);
         uint256[8] memory greatnessArray = getRandomGaussianNumbers(
-            string(abi.encodePacked(tokenId))
+            stringTokenId
         );
         //Optimise the tokenURI process by making a loop and using variables stored in mapping
         string[16] memory parts;
@@ -460,14 +471,14 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             )
         );
 
-        console.log(output);
+        // console.log(output);
         string memory json = Base64.encode(
             bytes(
                 string(
                     abi.encodePacked(
-                        '{"name": "Gear #',
-                        tokenId,
-                        '", "description": "0N1 Gear is a derivative of Loot for 0N1 Force with randomized  gear generated and stored on chain.", "image": "data:image/svg+xml;base64,',
+                        startString,
+                        toString(tokenId),
+                        '", "description": "0N1 Gear is a derivative of Loot for 0N1 Force with randomized gear generated and stored on chain.", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(output)),
                         '"}'
                     )
@@ -616,7 +627,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     }
 
     constructor() ERC721("0N1 Gear", "0N1GEAR") Ownable() {
-        //TODO create static data as bytes as more space efficient?
         lookups[categories[0]] = [
             M_WEAPON_1,
             M_WEAPON_2,
