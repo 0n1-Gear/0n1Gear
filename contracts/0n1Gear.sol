@@ -151,99 +151,133 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         SUFFIXES_15
     ];
 
-    string[] private namePrefixes = [
-        "Abhorrent",
-        "Alluring",
-        "Ancient",
-        "Ashes",
-        "Blessed",
-        "Beaming",
-        "Baneful",
-        "Bloodthirsty",
-        "Barbaric",
-        "Brutal",
-        "Butcher",
-        "Calamity",
-        "Carnal",
-        "C4N4RY's",
-        "Ceaseless",
-        "Corporeal",
-        "Courage",
-        "Cryogenic",
-        "Damned",
-        "Dawn",
-        "D34TH's",
-        "Dishonored",
-        "Divine",
-        "Dusk",
-        "Dreadful",
-        "Eery",
-        "Eldritch",
-        "Enigma",
-        "Forgotten",
-        "Frost",
-        "Ghost",
-        "Glory",
-        "Gnarled",
-        "God",
-        "Grace",
-        "Heartrending",
-        "Horror",
-        "Hex",
-        "Howling",
-        "Ilussive",
-        "Lethal",
-        "Malice",
-        "Massacre",
-        "Mirage",
-        "Nameless",
-        "Nightfall",
-        "Nightmare",
-        "Nirvana",
-        "Nemesis",
-        "Nether",
-        "Oath",
-        "Peace",
-        "Purgatory",
-        "Prophecy",
-        "Phantom",
-        "Thunder",
-        "Silent",
-        "Phantom",
-        "Luminous",
-        "Awakened",
-        "Iridescent",
-        "Aura",
-        "Syndicate",
-        "R0S3's"
-        "J3ST3R's",
-        "WR1T3R's",
-        "M33Kasa's",
-        "L1NK's"
+    bytes32 private constant NAME_PREFIX_1 = "J3ST3R's";
+    bytes32 private constant NAME_PREFIX_2 = "WR1T3R's";
+    bytes32 private constant NAME_PREFIX_3 = "M33Kasa's";
+    bytes32 private constant NAME_PREFIX_4 = "L1NK's";
+    bytes32 private constant NAME_PREFIX_5 = "C4N4RY's";
+    bytes32 private constant NAME_PREFIX_6 = "R0S3's";
+    bytes32 private constant NAME_PREFIX_7 = "D34TH's";
+    bytes32 private constant NAME_PREFIX_8 = "Nameless";
+    bytes32 private constant NAME_PREFIX_9 = "Illusive";
+    bytes32 private constant NAME_PREFIX_10 = "Awakened";
+    bytes32 private constant NAME_PREFIX_11 = "Forgotten";
+    bytes32 private constant NAME_PREFIX_12 = "Damned";
+    bytes32 private constant NAME_PREFIX_13 = "Dawn";
+    bytes32 private constant NAME_PREFIX_14 = "Dusk";
+    bytes32 private constant NAME_PREFIX_15 = "Fate";
+    bytes32 private constant NAME_PREFIX_16 = "Howling";
+    bytes32 private constant NAME_PREFIX_17 = "Brutal";
+    bytes32 private constant NAME_PREFIX_18 = "Corporeal";
+    bytes32 private constant NAME_PREFIX_19 = "Peace";
+    bytes32 private constant NAME_PREFIX_20 = "Chaos";
+    bytes32 private constant NAME_PREFIX_21 = "Thunder";
+    bytes32 private constant NAME_PREFIX_22 = "Phantom";
+    bytes32 private constant NAME_PREFIX_23 = "Oath";
+    bytes32 private constant NAME_PREFIX_24 = "Luminous";
+    bytes32 private constant NAME_PREFIX_25 = "Irredescent";
+    bytes32 private constant NAME_PREFIX_26 = "Forsaken";
+    bytes32 private constant NAME_PREFIX_27 = "Glory";
+    bytes32 private constant NAME_PREFIX_28 = "Plague";
+    bytes32 private constant NAME_PREFIX_29 = "Rebellious";
+    bytes32 private constant NAME_PREFIX_30 = "Ceaseless";
+    bytes32 private constant NAME_PREFIX_31 = "Dishonered";
+    bytes32 private constant NAME_PREFIX_32 = "Silent";
+    bytes32 private constant NAME_PREFIX_33 = "Fate";
+    bytes32 private constant NAME_PREFIX_34 = "Bound";
+    bytes32 private constant NAME_PREFIX_35 = "Divine";
+    bytes32 private constant NAME_PREFIX_36 = "Eerie";
+    bytes32 private constant NAME_PREFIX_37 = "Limitless";
+    bytes32 private constant NAME_PREFIX_38 = "Quantum";
+    bytes32 private constant NAME_PREFIX_39 = "Living";
+    bytes32 private constant NAME_PREFIX_40 = "Bestial";
+    bytes32 private constant NAME_PREFIX_41 = "Barbaric";
+    bytes32[] private namePrefixes = [
+        NAME_PREFIX_1,
+        NAME_PREFIX_2,
+        NAME_PREFIX_3,
+        NAME_PREFIX_4,
+        NAME_PREFIX_5,
+        NAME_PREFIX_6,
+        NAME_PREFIX_7,
+        NAME_PREFIX_8,
+        NAME_PREFIX_9,
+        NAME_PREFIX_10,
+        NAME_PREFIX_11,
+        NAME_PREFIX_12,
+        NAME_PREFIX_13,
+        NAME_PREFIX_14,
+        NAME_PREFIX_15,
+        NAME_PREFIX_16,
+        NAME_PREFIX_17,
+        NAME_PREFIX_18,
+        NAME_PREFIX_19,
+        NAME_PREFIX_20,
+        NAME_PREFIX_21,
+        NAME_PREFIX_22,
+        NAME_PREFIX_23,
+        NAME_PREFIX_24,
+        NAME_PREFIX_25,
+        NAME_PREFIX_26,
+        NAME_PREFIX_27,
+        NAME_PREFIX_28,
+        NAME_PREFIX_29,
+        NAME_PREFIX_30,
+        NAME_PREFIX_31,
+        NAME_PREFIX_32,
+        NAME_PREFIX_33,
+        NAME_PREFIX_34,
+        NAME_PREFIX_35,
+        NAME_PREFIX_36,
+        NAME_PREFIX_37,
+        NAME_PREFIX_38,
+        NAME_PREFIX_39,
+        NAME_PREFIX_40,
+        NAME_PREFIX_41
     ];
-
-    string[] private nameSuffixes = [
-        "Grasp",
-        "Whisper",
-        "Shadow",
-        "Torment",
-        "Will",
-        "Tears",
-        "Calling",
-        "Sun",
-        "Moon",
-        "Despair",
-        "Song",
-        "Pursuit",
-        "Rage",
-        "Lullaby",
-        "Dream",
-        "Kiss",
-        "Lust",
-        "Beacon",
-        "Binder",
-        "Remorse",
-        "Delusion"
+    bytes32 private constant NAME_SUFFIX_1 = "Grasp";
+    bytes32 private constant NAME_SUFFIX_2 = "Whisper";
+    bytes32 private constant NAME_SUFFIX_3 = "Shadow";
+    bytes32 private constant NAME_SUFFIX_4 = "Torment";
+    bytes32 private constant NAME_SUFFIX_5 = "Will";
+    bytes32 private constant NAME_SUFFIX_6 = "Tears";
+    bytes32 private constant NAME_SUFFIX_7 = "Calling";
+    bytes32 private constant NAME_SUFFIX_8 = "Sun";
+    bytes32 private constant NAME_SUFFIX_9 = "Moon";
+    bytes32 private constant NAME_SUFFIX_10 = "Despair";
+    bytes32 private constant NAME_SUFFIX_11 = "Song";
+    bytes32 private constant NAME_SUFFIX_12 = "Pursuit";
+    bytes32 private constant NAME_SUFFIX_13 = "Rage";
+    bytes32 private constant NAME_SUFFIX_14 = "Lullaby";
+    bytes32 private constant NAME_SUFFIX_15 = "Dream";
+    bytes32 private constant NAME_SUFFIX_16 = "Kiss";
+    bytes32 private constant NAME_SUFFIX_17 = "Lust";
+    bytes32 private constant NAME_SUFFIX_18 = "Beacon";
+    bytes32 private constant NAME_SUFFIX_19 = "Binder";
+    bytes32 private constant NAME_SUFFIX_20 = "Remorse";
+    bytes32 private constant NAME_SUFFIX_21 = "Delusion";
+    bytes32[] private nameSuffixes = [
+        NAME_SUFFIX_1,
+        NAME_SUFFIX_2,
+        NAME_SUFFIX_3,
+        NAME_SUFFIX_4,
+        NAME_SUFFIX_5,
+        NAME_SUFFIX_6,
+        NAME_SUFFIX_7,
+        NAME_SUFFIX_8,
+        NAME_SUFFIX_9,
+        NAME_SUFFIX_10,
+        NAME_SUFFIX_11,
+        NAME_SUFFIX_12,
+        NAME_SUFFIX_13,
+        NAME_SUFFIX_14,
+        NAME_SUFFIX_15,
+        NAME_SUFFIX_16,
+        NAME_SUFFIX_17,
+        NAME_SUFFIX_18,
+        NAME_SUFFIX_19,
+        NAME_SUFFIX_20,
+        NAME_SUFFIX_21
     ];
 
     function random(string memory seed, uint256 offset)
@@ -327,7 +361,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 );
             }
             if (greatness > 13 || greatness < 7) {
-                string[2] memory name;
+                bytes32[2] memory name;
                 name[0] = namePrefixes[rand % namePrefixes.length];
                 name[1] = nameSuffixes[rand % nameSuffixes.length];
                 if (greatness > 14 || greatness < 6) {
