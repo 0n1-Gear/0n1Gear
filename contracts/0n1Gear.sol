@@ -4,7 +4,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "base64-sol/base64.sol";
-import "./mocks/OniMock.sol";
 import "hardhat/console.sol";
 
 contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
@@ -116,132 +115,213 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         TITLE_CATEGORY
     ];
 
-    string[] private suffixes = [
-        "of Style",
-        "of Spirit",
-        "of Strength",
-        "of Hope",
-        "of Warding",
-        "of Skill",
-        "of Fury",
-        "of Lost Memories",
-        "of the Ebony Door",
-        "of the Fallen",
-        "of the Favoured",
-        "of the Supreme",
-        "of the Kami",
-        "of the Siblings",
-        "of the Emperor"
+    bytes32 private constant SUFFIXES_1 = "of Style";
+    bytes32 private constant SUFFIXES_2 = "of Spirit";
+    bytes32 private constant SUFFIXES_3 = "of Strength";
+    bytes32 private constant SUFFIXES_4 = "of Hope";
+    bytes32 private constant SUFFIXES_5 = "of Warding";
+    bytes32 private constant SUFFIXES_6 = "of Skill";
+    bytes32 private constant SUFFIXES_7 = "of Fury";
+    bytes32 private constant SUFFIXES_8 = "of Lost Memories";
+    bytes32 private constant SUFFIXES_9 = "of the Ebony Door";
+    bytes32 private constant SUFFIXES_10 = "of the Fallen";
+    bytes32 private constant SUFFIXES_11 = "of the Favoured";
+    bytes32 private constant SUFFIXES_12 = "of the Supreme";
+    bytes32 private constant SUFFIXES_13 = "of the Kami";
+    bytes32 private constant SUFFIXES_14 = "of the Siblings";
+    bytes32 private constant SUFFIXES_15 = "of the Emperor";
+
+    bytes32[] private suffixes = [
+        SUFFIXES_1,
+        SUFFIXES_2,
+        SUFFIXES_3,
+        SUFFIXES_4,
+        SUFFIXES_5,
+        SUFFIXES_6,
+        SUFFIXES_7,
+        SUFFIXES_8,
+        SUFFIXES_9,
+        SUFFIXES_10,
+        SUFFIXES_11,
+        SUFFIXES_12,
+        SUFFIXES_13,
+        SUFFIXES_14,
+        SUFFIXES_15
+    ];
+    bytes32 private constant PREFIXES_1 = "Fine";
+    bytes32 private constant PREFIXES_2 = "Ornate";
+    bytes32 private constant PREFIXES_3 = "Battlehardened";
+    bytes32 private constant PREFIXES_4 = "Blooded";
+    bytes32 private constant PREFIXES_5 = "Strong";
+    bytes32 private constant PREFIXES_6 = "Skill";
+    bytes32 private constant PREFIXES_7 = "Fury";
+    bytes32 private constant PREFIXES_8 = "Lost Memories";
+    bytes32 private constant PREFIXES_9 = "Ebony Door";
+    bytes32 private constant PREFIXES_10 = "Fallen";
+
+    bytes32[] private prefixes = [
+        PREFIXES_1,
+        PREFIXES_2,
+        PREFIXES_3,
+        PREFIXES_4,
+        PREFIXES_5,
+        PREFIXES_6,
+        PREFIXES_7,
+        PREFIXES_8,
+        PREFIXES_9,
+        PREFIXES_10
     ];
 
-    string[] private namePrefixes = [
-        "Abhorrent",
-        "Alluring",
-        "Ancient",
-        "Ashes",
-        "Blessed",
-        "Beaming",
-        "Baneful",
-        "Bloodthirsty",
-        "Barbaric",
-        "Brutal",
-        "Butcher",
-        "Calamity",
-        "Carnal",
-        "C4N4RY's",
-        "Ceaseless",
-        "Corporeal",
-        "Courage",
-        "Cryogenic",
-        "Damned",
-        "Dawn",
-        "D34TH's",
-        "Dishonored",
-        "Divine",
-        "Dusk",
-        "Dreadful",
-        "Eery",
-        "Eldritch",
-        "Enigma",
-        "Forgotten",
-        "Frost",
-        "Ghost",
-        "Glory",
-        "Gnarled",
-        "God",
-        "Grace",
-        "Heartrending",
-        "Horror",
-        "Hex",
-        "Howling",
-        "Ilussive",
-        "Lethal",
-        "Malice",
-        "Massacre",
-        "Mirage",
-        "Nameless",
-        "Nightfall",
-        "Nightmare",
-        "Nirvana",
-        "Nemesis",
-        "Nether",
-        "Oath",
-        "Peace",
-        "Purgatory",
-        "Prophecy",
-        "Phantom",
-        "Thunder",
-        "Silent",
-        "Phantom",
-        "Luminous",
-        "Awakened",
-        "Iridescent",
-        "Aura",
-        "Syndicate",
-        "R0S3's"
-        "J3ST3R's",
-        "WR1T3R's",
-        "M33Kasa's",
-        "L1NK's"
+    bytes32 private constant NAME_PREFIX_1 = "J3ST3R's";
+    bytes32 private constant NAME_PREFIX_2 = "WR1T3R's";
+    bytes32 private constant NAME_PREFIX_3 = "M33Kasa's";
+    bytes32 private constant NAME_PREFIX_4 = "L1NK's";
+    bytes32 private constant NAME_PREFIX_5 = "C4N4RY's";
+    bytes32 private constant NAME_PREFIX_6 = "R0S3's";
+    bytes32 private constant NAME_PREFIX_7 = "D34TH's";
+    bytes32 private constant NAME_PREFIX_8 = "Nameless";
+    bytes32 private constant NAME_PREFIX_9 = "Illusive";
+    bytes32 private constant NAME_PREFIX_10 = "Awakened";
+    bytes32 private constant NAME_PREFIX_11 = "Forgotten";
+    bytes32 private constant NAME_PREFIX_12 = "Damned";
+    bytes32 private constant NAME_PREFIX_13 = "Dawn";
+    bytes32 private constant NAME_PREFIX_14 = "Dusk";
+    bytes32 private constant NAME_PREFIX_15 = "Fate";
+    bytes32 private constant NAME_PREFIX_16 = "Howling";
+    bytes32 private constant NAME_PREFIX_17 = "Brutal";
+    bytes32 private constant NAME_PREFIX_18 = "Corporeal";
+    bytes32 private constant NAME_PREFIX_19 = "Peace";
+    bytes32 private constant NAME_PREFIX_20 = "Chaos";
+    bytes32 private constant NAME_PREFIX_21 = "Thunder";
+    bytes32 private constant NAME_PREFIX_22 = "Phantom";
+    bytes32 private constant NAME_PREFIX_23 = "Oath";
+    bytes32 private constant NAME_PREFIX_24 = "Luminous";
+    bytes32 private constant NAME_PREFIX_25 = "Irredescent";
+    bytes32 private constant NAME_PREFIX_26 = "Forsaken";
+    bytes32 private constant NAME_PREFIX_27 = "Glory";
+    bytes32 private constant NAME_PREFIX_28 = "Plague";
+    bytes32 private constant NAME_PREFIX_29 = "Rebellious";
+    bytes32 private constant NAME_PREFIX_30 = "Ceaseless";
+    bytes32 private constant NAME_PREFIX_31 = "Dishonered";
+    bytes32 private constant NAME_PREFIX_32 = "Silent";
+    bytes32 private constant NAME_PREFIX_33 = "Fate";
+    bytes32 private constant NAME_PREFIX_34 = "Bound";
+    bytes32 private constant NAME_PREFIX_35 = "Divine";
+    bytes32 private constant NAME_PREFIX_36 = "Eerie";
+    bytes32 private constant NAME_PREFIX_37 = "Limitless";
+    bytes32 private constant NAME_PREFIX_38 = "Quantum";
+    bytes32 private constant NAME_PREFIX_39 = "Living";
+    bytes32 private constant NAME_PREFIX_40 = "Bestial";
+    bytes32 private constant NAME_PREFIX_41 = "Barbaric";
+    bytes32[] private namePrefixes = [
+        NAME_PREFIX_1,
+        NAME_PREFIX_2,
+        NAME_PREFIX_3,
+        NAME_PREFIX_4,
+        NAME_PREFIX_5,
+        NAME_PREFIX_6,
+        NAME_PREFIX_7,
+        NAME_PREFIX_8,
+        NAME_PREFIX_9,
+        NAME_PREFIX_10,
+        NAME_PREFIX_11,
+        NAME_PREFIX_12,
+        NAME_PREFIX_13,
+        NAME_PREFIX_14,
+        NAME_PREFIX_15,
+        NAME_PREFIX_16,
+        NAME_PREFIX_17,
+        NAME_PREFIX_18,
+        NAME_PREFIX_19,
+        NAME_PREFIX_20,
+        NAME_PREFIX_21,
+        NAME_PREFIX_22,
+        NAME_PREFIX_23,
+        NAME_PREFIX_24,
+        NAME_PREFIX_25,
+        NAME_PREFIX_26,
+        NAME_PREFIX_27,
+        NAME_PREFIX_28,
+        NAME_PREFIX_29,
+        NAME_PREFIX_30,
+        NAME_PREFIX_31,
+        NAME_PREFIX_32,
+        NAME_PREFIX_33,
+        NAME_PREFIX_34,
+        NAME_PREFIX_35,
+        NAME_PREFIX_36,
+        NAME_PREFIX_37,
+        NAME_PREFIX_38,
+        NAME_PREFIX_39,
+        NAME_PREFIX_40,
+        NAME_PREFIX_41
+    ];
+    bytes32 private constant NAME_SUFFIX_1 = "Grasp";
+    bytes32 private constant NAME_SUFFIX_2 = "Whisper";
+    bytes32 private constant NAME_SUFFIX_3 = "Shadow";
+    bytes32 private constant NAME_SUFFIX_4 = "Torment";
+    bytes32 private constant NAME_SUFFIX_5 = "Will";
+    bytes32 private constant NAME_SUFFIX_6 = "Tears";
+    bytes32 private constant NAME_SUFFIX_7 = "Calling";
+    bytes32 private constant NAME_SUFFIX_8 = "Sun";
+    bytes32 private constant NAME_SUFFIX_9 = "Moon";
+    bytes32 private constant NAME_SUFFIX_10 = "Despair";
+    bytes32 private constant NAME_SUFFIX_11 = "Song";
+    bytes32 private constant NAME_SUFFIX_12 = "Pursuit";
+    bytes32 private constant NAME_SUFFIX_13 = "Rage";
+    bytes32 private constant NAME_SUFFIX_14 = "Lullaby";
+    bytes32 private constant NAME_SUFFIX_15 = "Dream";
+    bytes32 private constant NAME_SUFFIX_16 = "Kiss";
+    bytes32 private constant NAME_SUFFIX_17 = "Lust";
+    bytes32 private constant NAME_SUFFIX_18 = "Beacon";
+    bytes32 private constant NAME_SUFFIX_19 = "Binder";
+    bytes32 private constant NAME_SUFFIX_20 = "Remorse";
+    bytes32 private constant NAME_SUFFIX_21 = "Delusion";
+    bytes32[] private nameSuffixes = [
+        NAME_SUFFIX_1,
+        NAME_SUFFIX_2,
+        NAME_SUFFIX_3,
+        NAME_SUFFIX_4,
+        NAME_SUFFIX_5,
+        NAME_SUFFIX_6,
+        NAME_SUFFIX_7,
+        NAME_SUFFIX_8,
+        NAME_SUFFIX_9,
+        NAME_SUFFIX_10,
+        NAME_SUFFIX_11,
+        NAME_SUFFIX_12,
+        NAME_SUFFIX_13,
+        NAME_SUFFIX_14,
+        NAME_SUFFIX_15,
+        NAME_SUFFIX_16,
+        NAME_SUFFIX_17,
+        NAME_SUFFIX_18,
+        NAME_SUFFIX_19,
+        NAME_SUFFIX_20,
+        NAME_SUFFIX_21
     ];
 
-    string[] private nameSuffixes = [
-        "Grasp",
-        "Whisper",
-        "Shadow",
-        "Torment",
-        "Will",
-        "Tears",
-        "Calling",
-        "Sun",
-        "Moon",
-        "Despair",
-        "Song",
-        "Pursuit",
-        "Rage",
-        "Lullaby",
-        "Dream",
-        "Kiss",
-        "Lust",
-        "Beacon",
-        "Binder",
-        "Remorse",
-        "Delusion"
-    ];
-
-    function random(string memory seed, uint256 offset) internal pure returns (uint256) {
-        return uint8(uint256(keccak256(abi.encodePacked(seed, toString(offset)))));
+    function random(string memory seed, uint256 offset)
+        internal
+        pure
+        returns (uint256)
+    {
+        return
+            uint8(uint256(keccak256(abi.encodePacked(seed, toString(offset)))));
     }
 
-    
-// Gaussian generation with thanks to @syntro from site:
-// https://www.gaussianprotocol.io/
-// Twitter:
-// https://twitter.com/GaussianProto
-// Contract:
-// https://etherscan.io/address/0xdD301BB7734d0e269A614766c00509df735B254c
+    // Gaussian generation with thanks to @syntro from site:
+    // https://www.gaussianprotocol.io/
+    // Twitter:
+    // https://twitter.com/GaussianProto
+    // Contract:
+    // https://etherscan.io/address/0xdD301BB7734d0e269A614766c00509df735B254c
 
-function getRandomGaussianNumbers(string memory seed) public pure returns (uint256[8] memory) {
+    function getRandomGaussianNumbers(string memory seed)
+        public
+        pure
+        returns (uint256[8] memory)
+    {
         uint256[8] memory numbers;
         for (uint8 i = 0; i < 8; ++i) {
             int64 accumulator = 0;
@@ -261,22 +341,18 @@ function getRandomGaussianNumbers(string memory seed) public pure returns (uint2
             numbers[i] = uint256(uint64(accumulator));
         }
         return numbers;
-}
-    function pluck(uint256 tokenId, bytes32 keyPrefix, uint greatness)
-        internal
-        view
-        returns (string memory)
-    {
+    }
+
+    function pluck(
+        uint256 tokenId,
+        bytes32 keyPrefix,
+        uint256 greatness
+    ) internal view returns (string memory) {
         bytes32[] memory sourceArray = lookups[keyPrefix];
-        uint256 rand = random(string(abi.encodePacked(keyPrefix)),tokenId);
+        uint256 rand = random(string(abi.encodePacked(keyPrefix)), tokenId);
         string memory output = string(
             abi.encodePacked(sourceArray[rand % sourceArray.length])
         );
-        // console.log(
-        //     "greatness = ",
-        //     greatness,
-        //     string(abi.encodePacked(keyPrefix))
-        // );
         if (keyPrefix == HAND_CATEGORY) {
             output = string(abi.encodePacked(output, " ", HANDS_SUFFIX));
         }
@@ -291,6 +367,21 @@ function getRandomGaussianNumbers(string memory seed) public pure returns (uint2
                 return "";
             }
         } else {
+            //For weapons, add a prefix as well to the item
+            if (
+                keyPrefix == PRIMARY_WEAPON_CATEGORY ||
+                keyPrefix == SECONDARY_WEAPON_CATEGORY
+            ) {
+                if (greatness > 11 || greatness < 9) {
+                    output = string(
+                        abi.encodePacked(
+                            prefixes[rand % prefixes.length],
+                            " ",
+                            output
+                        )
+                    );
+                }
+            }
             if (greatness > 12 || greatness < 8) {
                 output = string(
                     abi.encodePacked(
@@ -300,11 +391,11 @@ function getRandomGaussianNumbers(string memory seed) public pure returns (uint2
                     )
                 );
             }
-            if (greatness > 13 || greatness <7) {
-                string[2] memory name;
+            if (greatness > 13 || greatness < 7) {
+                bytes32[2] memory name;
                 name[0] = namePrefixes[rand % namePrefixes.length];
                 name[1] = nameSuffixes[rand % nameSuffixes.length];
-                if (greatness > 14 || greatness <6) {
+                if (greatness > 14 || greatness < 6) {
                     output = string(abi.encodePacked(output, " +1"));
                 }
                 output = string(
@@ -321,7 +412,9 @@ function getRandomGaussianNumbers(string memory seed) public pure returns (uint2
         override
         returns (string memory)
     {
-        uint[8] memory greatnessArray = getRandomGaussianNumbers(string(abi.encodePacked(tokenId)));
+        uint256[8] memory greatnessArray = getRandomGaussianNumbers(
+            string(abi.encodePacked(tokenId))
+        );
         //Optimise the tokenURI process by making a loop and using variables stored in mapping
         string[16] memory parts;
         parts[
@@ -367,7 +460,7 @@ function getRandomGaussianNumbers(string memory seed) public pure returns (uint2
             )
         );
 
-        // console.log(output);
+        console.log(output);
         string memory json = Base64.encode(
             bytes(
                 string(
@@ -398,8 +491,12 @@ function getRandomGaussianNumbers(string memory seed) public pure returns (uint2
     function setIsAllowListActive(bool _isAllowListActive) external onlyOwner {
         isAllowListActive = _isAllowListActive;
     }
-    
-    function isGearClaimed(uint256 tokenId) external view returns (bool isClaimed){
+
+    function isGearClaimed(uint256 tokenId)
+        external
+        view
+        returns (bool isClaimed)
+    {
         return _claimedList[tokenId];
     }
 
