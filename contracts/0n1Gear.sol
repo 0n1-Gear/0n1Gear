@@ -116,23 +116,39 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         TITLE_CATEGORY
     ];
 
-    string[] private suffixes = [
-        "of Style",
-        "of Spirit",
-        "of Strength",
-        "of Mastery",
-        "of Wisdom",
-        "of Harmony",
-        "of Aura",
-        "of Shadow",
-        "of Void",
-        "of the Shift",
-        "of the Fallen",
-        "of the Favoured",
-        "of the Supreme",
-        "of the Kami",
-        "of the Siblings",
-        "of the Emperor"
+    bytes32 private constant SUFFIXES_1 = "of Style";
+    bytes32 private constant SUFFIXES_2 = "of Spirit";
+    bytes32 private constant SUFFIXES_3 = "of Strength";
+    bytes32 private constant SUFFIXES_4 = "of Hope";
+    bytes32 private constant SUFFIXES_5 = "of Warding";
+    bytes32 private constant SUFFIXES_6 = "of Skill";
+    bytes32 private constant SUFFIXES_7 = "of Fury";
+    bytes32 private constant SUFFIXES_8 = "of Lost Memories";
+    bytes32 private constant SUFFIXES_9 = "of the Ebony Door";
+    bytes32 private constant SUFFIXES_10 = "of the Fallen";
+    bytes32 private constant SUFFIXES_11 = "of the Favoured";
+    bytes32 private constant SUFFIXES_12 = "of the Supreme";
+    bytes32 private constant SUFFIXES_13 = "of the Kami";
+    bytes32 private constant SUFFIXES_14 = "of the Siblings";
+    bytes32 private constant SUFFIXES_15 = "of the Emperor";
+
+    bytes32[] private suffixes = [
+        SUFFIXES_1,
+        SUFFIXES_2,
+        SUFFIXES_3,
+        SUFFIXES_4,
+        SUFFIXES_5,
+        SUFFIXES_6,
+        SUFFIXES_7,
+        SUFFIXES_8,
+        SUFFIXES_9,
+        SUFFIXES_10,
+        SUFFIXES_11,
+        SUFFIXES_11,
+        SUFFIXES_12,
+        SUFFIXES_13,
+        SUFFIXES_14,
+        SUFFIXES_15
     ];
 
     string[] private namePrefixes = [
@@ -230,19 +246,27 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         "Delusion"
     ];
 
-    function random(string memory seed, uint256 offset) internal pure returns (uint256) {
-        return uint8(uint256(keccak256(abi.encodePacked(seed, toString(offset)))));
+    function random(string memory seed, uint256 offset)
+        internal
+        pure
+        returns (uint256)
+    {
+        return
+            uint8(uint256(keccak256(abi.encodePacked(seed, toString(offset)))));
     }
 
-    
-// Gaussian generation with thanks to @syntro from site:
-// https://www.gaussianprotocol.io/
-// Twitter:
-// https://twitter.com/GaussianProto
-// Contract:
-// https://etherscan.io/address/0xdD301BB7734d0e269A614766c00509df735B254c
+    // Gaussian generation with thanks to @syntro from site:
+    // https://www.gaussianprotocol.io/
+    // Twitter:
+    // https://twitter.com/GaussianProto
+    // Contract:
+    // https://etherscan.io/address/0xdD301BB7734d0e269A614766c00509df735B254c
 
-function getRandomGaussianNumbers(string memory seed) public pure returns (uint256[8] memory) {
+    function getRandomGaussianNumbers(string memory seed)
+        public
+        pure
+        returns (uint256[8] memory)
+    {
         uint256[8] memory numbers;
         for (uint8 i = 0; i < 8; ++i) {
             int64 accumulator = 0;
@@ -262,14 +286,15 @@ function getRandomGaussianNumbers(string memory seed) public pure returns (uint2
             numbers[i] = uint256(uint64(accumulator));
         }
         return numbers;
-}
-    function pluck(uint256 tokenId, bytes32 keyPrefix, uint greatness)
-        internal
-        view
-        returns (string memory)
-    {
+    }
+
+    function pluck(
+        uint256 tokenId,
+        bytes32 keyPrefix,
+        uint256 greatness
+    ) internal view returns (string memory) {
         bytes32[] memory sourceArray = lookups[keyPrefix];
-        uint256 rand = random(string(abi.encodePacked(keyPrefix)),tokenId);
+        uint256 rand = random(string(abi.encodePacked(keyPrefix)), tokenId);
         string memory output = string(
             abi.encodePacked(sourceArray[rand % sourceArray.length])
         );
@@ -301,11 +326,11 @@ function getRandomGaussianNumbers(string memory seed) public pure returns (uint2
                     )
                 );
             }
-            if (greatness > 13 || greatness <7) {
+            if (greatness > 13 || greatness < 7) {
                 string[2] memory name;
                 name[0] = namePrefixes[rand % namePrefixes.length];
                 name[1] = nameSuffixes[rand % nameSuffixes.length];
-                if (greatness > 14 || greatness <6) {
+                if (greatness > 14 || greatness < 6) {
                     output = string(abi.encodePacked(output, " +1"));
                 }
                 output = string(
@@ -322,7 +347,9 @@ function getRandomGaussianNumbers(string memory seed) public pure returns (uint2
         override
         returns (string memory)
     {
-        uint[8] memory greatnessArray = getRandomGaussianNumbers(string(abi.encodePacked(tokenId)));
+        uint256[8] memory greatnessArray = getRandomGaussianNumbers(
+            string(abi.encodePacked(tokenId))
+        );
         //Optimise the tokenURI process by making a loop and using variables stored in mapping
         string[16] memory parts;
         parts[
@@ -399,8 +426,12 @@ function getRandomGaussianNumbers(string memory seed) public pure returns (uint2
     function setIsAllowListActive(bool _isAllowListActive) external onlyOwner {
         isAllowListActive = _isAllowListActive;
     }
-    
-    function isGearClaimed(uint256 tokenId) external view returns (bool isClaimed){
+
+    function isGearClaimed(uint256 tokenId)
+        external
+        view
+        returns (bool isClaimed)
+    {
         return _claimedList[tokenId];
     }
 
