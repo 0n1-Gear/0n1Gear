@@ -4,7 +4,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "base64-sol/base64.sol";
-import "./mocks/OniMock.sol";
 import "hardhat/console.sol";
 
 contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
@@ -144,11 +143,33 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         SUFFIXES_9,
         SUFFIXES_10,
         SUFFIXES_11,
-        SUFFIXES_11,
         SUFFIXES_12,
         SUFFIXES_13,
         SUFFIXES_14,
         SUFFIXES_15
+    ];
+    bytes32 private constant PREFIXES_1 = "Fine";
+    bytes32 private constant PREFIXES_2 = "Ornate";
+    bytes32 private constant PREFIXES_3 = "Battlehardened";
+    bytes32 private constant PREFIXES_4 = "Blooded";
+    bytes32 private constant PREFIXES_5 = "Strong";
+    bytes32 private constant PREFIXES_6 = "Skill";
+    bytes32 private constant PREFIXES_7 = "Fury";
+    bytes32 private constant PREFIXES_8 = "Lost Memories";
+    bytes32 private constant PREFIXES_9 = "Ebony Door";
+    bytes32 private constant PREFIXES_10 = "Fallen";
+
+    bytes32[] private prefixes = [
+        PREFIXES_1,
+        PREFIXES_2,
+        PREFIXES_3,
+        PREFIXES_4,
+        PREFIXES_5,
+        PREFIXES_6,
+        PREFIXES_7,
+        PREFIXES_8,
+        PREFIXES_9,
+        PREFIXES_10
     ];
 
     bytes32 private constant NAME_PREFIX_1 = "J3ST3R's";
@@ -332,11 +353,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         string memory output = string(
             abi.encodePacked(sourceArray[rand % sourceArray.length])
         );
-        // console.log(
-        //     "greatness = ",
-        //     greatness,
-        //     string(abi.encodePacked(keyPrefix))
-        // );
         if (keyPrefix == HAND_CATEGORY) {
             output = string(abi.encodePacked(output, " ", HANDS_SUFFIX));
         }
@@ -351,6 +367,21 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 return "";
             }
         } else {
+            //For weapons, add a prefix as well to the item
+            if (
+                keyPrefix == PRIMARY_WEAPON_CATEGORY ||
+                keyPrefix == SECONDARY_WEAPON_CATEGORY
+            ) {
+                if (greatness > 11 || greatness < 9) {
+                    output = string(
+                        abi.encodePacked(
+                            prefixes[rand % prefixes.length],
+                            " ",
+                            output
+                        )
+                    );
+                }
+            }
             if (greatness > 12 || greatness < 8) {
                 output = string(
                     abi.encodePacked(
@@ -429,7 +460,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             )
         );
 
-        // console.log(output);
+        console.log(output);
         string memory json = Base64.encode(
             bytes(
                 string(
