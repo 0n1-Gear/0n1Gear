@@ -538,7 +538,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     }
 
     function getTokenIdsForOni(address owner)
-        internal
+        public
         view
         returns (uint256[] memory tokenIds)
     {
