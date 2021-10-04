@@ -35,53 +35,53 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
 
     //MIXED PRIMARY OR SECONDARY (OR BOTH) WEAPONS
     bytes32 private M_WEAPON_1 = "Katana";
-    bytes32 private M_WEAPON_2 = "Revolver";
+    bytes32 private M_WEAPON_2 = "Enegery bolt";
     bytes32 private M_WEAPON_3 = "Dagger";
-    bytes32 private M_WEAPON_4 = "Sansetsukon";
-    bytes32 private M_WEAPON_5 = "Sai";
+    bytes32 private M_WEAPON_4 = "Tactical Staf";
+    bytes32 private M_WEAPON_5 = "Neo Sai";
     bytes32 private M_WEAPON_6 = "Axe";
 
     //PRIMARY WEAPONS
     bytes32 private P_WEAPON_1 = "Naginata";
-    bytes32 private P_WEAPON_2 = "Longbow";
+    bytes32 private P_WEAPON_2 = "Compound Bow";
     bytes32 private P_WEAPON_3 = "Kukri";
     bytes32 private P_WEAPON_4 = "Kanabo";
-    bytes32 private P_WEAPON_5 = "Sniper";
+    bytes32 private P_WEAPON_5 = "Railgun";
     bytes32 private P_WEAPON_6 = "Odachi";
 
     //SECONDARY WEAPONS
-    bytes32 private S_WEAPON_1 = "Smoke grenade";
+    bytes32 private S_WEAPON_1 = "Suriken";
     bytes32 private S_WEAPON_2 = "Flame Talisman";
     bytes32 private S_WEAPON_3 = "Spider Drones";
     bytes32 private S_WEAPON_4 = "Tanto";
     bytes32 private S_WEAPON_5 = "Kunai";
-    bytes32 private S_WEAPON_6 = "Kaiken";
+    bytes32 private S_WEAPON_6 = "Nanite dust";
 
     //WAIST ITEMS
     bytes32 private WAIST_1 = "Tactical belt";
     bytes32 private WAIST_2 = "Leg harness";
-    bytes32 private WAIST_3 = "Belt bag";
-    bytes32 private WAIST_4 = "Paracord";
+    bytes32 private WAIST_3 = "Hip Pack";
+    bytes32 private WAIST_4 = "Cyber Belt";
     bytes32 private WAIST_5 = "Obi";
 
     //HANDS ITEMS
     bytes32 private HANDS_SUFFIX = "Gloves";
     bytes32 private HANDS_1 = "Leather";
     bytes32 private HANDS_2 = "Surgical";
-    bytes32 private HANDS_3 = "Suede";
+    bytes32 private HANDS_3 = "Techno";
     bytes32 private HANDS_4 = "Silk";
     bytes32 private HANDS_5 = "Spiked";
-    bytes32 private HANDS_6 = "Plated";
+    bytes32 private HANDS_6 = "Mech";
     bytes32 private HANDS_7 = "Knuckled";
-    bytes32 private HANDS_8 = "Lace";
+    bytes32 private HANDS_8 = "Hardened";
 
     //FEET ITEMS
-    bytes32 private FEET_1 = "Leather Boots";
-    bytes32 private FEET_2 = "Steel-toed Boots";
-    bytes32 private FEET_3 = "Spring/booster Shoes";
+    bytes32 private FEET_1 = "Rocker Boots";
+    bytes32 private FEET_2 = "Formal Shoes";
+    bytes32 private FEET_3 = "Techno Boots";
     bytes32 private FEET_4 = "Jika-tabi";
-    bytes32 private FEET_5 = "Suede Shoes";
-    bytes32 private FEET_6 = "Slippers";
+    bytes32 private FEET_5 = "Grav Sneakers";
+    bytes32 private FEET_6 = "0N1 Force Ones";
 
     //RINGS
     bytes32 private RING_SUFFIX = "Ring";
