@@ -1,0 +1,20 @@
+import 'dotenv/config'
+
+const config = {
+  HARDHAT_NETWORK: process.env.HARDHAT_NETWORK || 'hardhat',
+
+  ALCHEMY_RINKEBY_KEY: process.env.ALCHEMY_RINKEBY_KEY || '',
+  ALCHEMY_MAINNET_KEY: process.env.ALCHEMY_MAINNET_KEY || '',
+
+  ETHERSCAN_API_KEY: process.env.ETHERSCAN_API_KEY || '',
+
+  RINKEBY_PRIVATE_KEY: process.env.RINKEBY_PRIVATE_KEY || '',
+  DANGEROUS_MAINNET_PRIVATE_KEY: process.env.DANGEROUS_MAINNET_PRIVATE_KEY || '',
+
+  RINKEBY_CONTRACT_ADDRESS: process.env.RINKEBY_CONTRACT_ADDRESS || '',
+  MAINNET_CONTRACT_ADDRESS: process.env.MAINNET_CONTRACT_ADDRESS || '',
+
+  MAINNET_BLOCKNUMBER: process.env.MAINNET_BLOCKNUMBER || '',
+}
+
+export default config

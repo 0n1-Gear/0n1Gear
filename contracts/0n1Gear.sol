@@ -1,10 +1,11 @@
 pragma solidity ^0.8.6;
+
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+
 import "base64-sol/base64.sol";
-import "hardhat/console.sol";
 
 contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     // @dev - copied from ON1 contract as poss variables
@@ -12,16 +13,19 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     uint256 public constant ONI_PUBLIC = 7_700;
     uint256 public constant ONI_MAX = ONI_GIFT + ONI_PUBLIC;
     uint256 public constant PURCHASE_LIMIT = 7;
+
     bool public activated;
     bool public isAllowListActive;
+
     uint256 public constant PRICE_ONI = 0.025 ether;
     uint256 public constant PRICE_PUBLIC = 0.05 ether;
 
     uint256 private _tokenCount;
-    address private _oniAddress;
-    IERC721Enumerable private _oniContract;
     mapping(uint256 => bool) private _claimedList;
     mapping(bytes32 => bytes32[]) private lookups;
+
+    address private _oniAddress;
+    IERC721Enumerable private _oniContract;
 
     // Optimise all variables using bytes32 instead of strings. Can't seem to initialise an array of bytes32 so have to create them individually
     // and add to mapping at construction. Seems most gas efficient as contract gas heavy due to everything on chain
@@ -35,9 +39,9 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
 
     //MIXED PRIMARY OR SECONDARY (OR BOTH) WEAPONS
     bytes32 private M_WEAPON_1 = "Katana";
-    bytes32 private M_WEAPON_2 = "Enegery bolt";
+    bytes32 private M_WEAPON_2 = "Energy Bolt";
     bytes32 private M_WEAPON_3 = "Dagger";
-    bytes32 private M_WEAPON_4 = "Tactical Staf";
+    bytes32 private M_WEAPON_4 = "Tactical Staff";
     bytes32 private M_WEAPON_5 = "Neo Sai";
     bytes32 private M_WEAPON_6 = "Axe";
 
@@ -55,11 +59,11 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     bytes32 private S_WEAPON_3 = "Spider Drones";
     bytes32 private S_WEAPON_4 = "Tanto";
     bytes32 private S_WEAPON_5 = "Kunai";
-    bytes32 private S_WEAPON_6 = "Nanite dust";
+    bytes32 private S_WEAPON_6 = "Nanite Dust";
 
     //WAIST ITEMS
-    bytes32 private WAIST_1 = "Tactical belt";
-    bytes32 private WAIST_2 = "Leg harness";
+    bytes32 private WAIST_1 = "Tactical Belt";
+    bytes32 private WAIST_2 = "Leg Harness";
     bytes32 private WAIST_3 = "Hip Pack";
     bytes32 private WAIST_4 = "Cyber Belt";
     bytes32 private WAIST_5 = "Obi";
@@ -162,10 +166,10 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     bytes32 private NAME_PREFIX_1 = "J3ST3R's";
     bytes32 private NAME_PREFIX_2 = "WR1T3R's";
     bytes32 private NAME_PREFIX_3 = "M33Kasa's";
-    bytes32 private NAME_PREFIX_4 = "L1NK's";
-    bytes32 private NAME_PREFIX_5 = "C4N4RY's";
-    bytes32 private NAME_PREFIX_6 = "R0S3's";
-    bytes32 private NAME_PREFIX_7 = "D34TH's";
+    bytes32 private NAME_PREFIX_4 = "C4N4RY's";
+    bytes32 private NAME_PREFIX_5 = "R0S3's";
+    bytes32 private NAME_PREFIX_6 = "D34TH's";
+    bytes32 private NAME_PREFIX_7 = "One Source";
     bytes32 private NAME_PREFIX_8 = "Nameless";
     bytes32 private NAME_PREFIX_9 = "Illusive";
     bytes32 private NAME_PREFIX_10 = "Awakened";
@@ -419,7 +423,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         returns (string memory)
     {
         string memory stringTokenId = string(abi.encodePacked(tokenId));
-        // console.log("string token id = ", tokenId);
         uint256[8] memory greatnessArray = getRandomGaussianNumbers(
             stringTokenId
         );
@@ -468,7 +471,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             )
         );
 
-        // console.log(output);
         string memory json = Base64.encode(
             bytes(
                 string(
@@ -538,7 +540,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     }
 
     function getTokenIdsForOni(address owner)
-        internal
+        public
         view
         returns (uint256[] memory tokenIds)
     {
@@ -621,7 +623,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         }
     }
 
-    constructor() ERC721("0N1 Gear", "0N1GEAR") Ownable() {
+    constructor(string memory name, string memory symbol) ERC721(name, symbol) {
         lookups[categories[0]] = [
             M_WEAPON_1,
             M_WEAPON_2,
