@@ -34,7 +34,7 @@ describe('Purchase tokens', () => {
 
     it('Should allow owner to withdraw contract funds', async () => {
       const { token } = testContext
-      const price = await token.PRICE_ONI()
+      const price = await token.PRICE_PUBLIC()
 
       expect(await ethers.provider.getBalance(token.address)).to.be.equal(0)
 
@@ -61,7 +61,7 @@ describe('Purchase tokens', () => {
 
     it('Should not allow others to withdraw funds', async () => {
       const { token, notOwner } = testContext
-      const price = await token.PRICE_ONI()
+      const price = await token.PRICE_PUBLIC()
 
       expect(await ethers.provider.getBalance(token.address)).to.be.equal(0)
 

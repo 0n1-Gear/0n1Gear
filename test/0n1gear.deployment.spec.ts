@@ -5,9 +5,7 @@ import { assert, expect } from "chai";
 
 const NAME = 'OniGear'
 const SYMBOL = '0N1'
-const ONI_GIFT = 77
-const ONI_PUBLIC = 7_700
-const ONI_MAX = ONI_GIFT + ONI_PUBLIC
+const GEAR_MAX = 7_777
 const PURCHASE_LIMIT = 7
 const PRICE_ONI = BigNumber.from('25000000000000000')
 const PRICE_PUBLIC = BigNumber.from('50000000000000000')
@@ -20,9 +18,7 @@ const totalPublicSupply = 0
 const DEPLOY_VALUES: [string, string | number | BigNumber | boolean][] = [
   ['name', NAME],
   ['symbol', SYMBOL],
-  ['ONI_GIFT', ONI_GIFT],
-  ['ONI_PUBLIC', ONI_PUBLIC],
-  ['ONI_MAX', ONI_MAX],
+  ['GEAR_MAX', GEAR_MAX],
   ['PURCHASE_LIMIT', PURCHASE_LIMIT],
   ['PRICE_ONI', PRICE_ONI],
   ['PRICE_PUBLIC', PRICE_PUBLIC],

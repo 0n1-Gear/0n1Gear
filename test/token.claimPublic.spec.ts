@@ -36,7 +36,7 @@ describe('Setup allow list', () => {
     it('Should allow owner to claim single Oni (single)', async () => {
       const { token, notOwner } = testContext
 
-      const price = await token.PRICE_ONI()
+      const price = await token.PRICE_PUBLIC()
 
       const notOwnerAddress = await notOwner.getAddress()
 
@@ -53,7 +53,7 @@ describe('Setup allow list', () => {
     it('Should allow owner to claim single Oni (multiple)', async () => {
       const { token, notOwner } = testContext
 
-      const price = await token.PRICE_ONI()
+      const price = await token.PRICE_PUBLIC()
 
       const notOwnerAddress = await notOwner.getAddress()
 
@@ -70,7 +70,7 @@ describe('Setup allow list', () => {
     it('Should allow owner to claim multple Onis ', async () => {
       const { token, notOwner } = testContext
 
-      const price = await token.PRICE_ONI()
+      const price = await token.PRICE_PUBLIC()
 
       const notOwnerAddress = await notOwner.getAddress()
 
@@ -90,7 +90,7 @@ describe('Setup allow list', () => {
 
       token.setIsActive(false);
 
-      const price = await token.PRICE_ONI()
+      const price = await token.PRICE_PUBLIC()
 
       const notOwnerAddress = await notOwner.getAddress()
 
@@ -101,7 +101,7 @@ describe('Setup allow list', () => {
 
       token.setIsAllowListActive(true);
 
-      const price = await token.PRICE_ONI()
+      const price = await token.PRICE_PUBLIC()
 
       const notOwnerAddress = await notOwner.getAddress()
 
@@ -110,7 +110,7 @@ describe('Setup allow list', () => {
     it('Try and mint too many', async () => {
       const { token, notOwner } = testContext
 
-      const price = await token.PRICE_ONI()
+      const price = await token.PRICE_PUBLIC()
 
       const notOwnerAddress = await notOwner.getAddress()
 
