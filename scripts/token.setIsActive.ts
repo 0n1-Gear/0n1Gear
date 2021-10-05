@@ -6,31 +6,28 @@
 // import hre from 'hardhat'
 import { ethers } from 'hardhat'
 
-import config from '../config'
+import { getToken } from './helpers'
 
 async function main() {
   const [deployer] = await ethers.getSigners()
-  const Token = await ethers.getContractFactory('OniGear')
-  let token
+  const token = await getToken()
 
-  console.log('Deploying contracts using account:', deployer.address)
+  console.log('Using account:', deployer.address)
   console.log('Account balance:', ethers.utils.formatEther(await deployer.getBalance()))
 
-  console.log('Executing Token deploy')
+  console.log('Executing setIsActive')
 
-  if (config.HARDHAT_NETWORK === 'rinkeby') {
-    token = await Token.deploy('TestGearNFT', 'TSTGEAR')
-  } else if (config.HARDHAT_NETWORK === 'mainnet') {
-    console.log('Deploying to mainnet...');
-    token = await Token.deploy('0N1 Gear', '0N1GEAR')
-  }
+  const setIsActiveTx = await token.setIsActive(true, {
+    maxFeePerGas: 60_000_000_000,
+    maxPriorityFeePerGas: 2_000_000_000,
+    // nonce: 1,
+  })
+  await setIsActiveTx.wait()
 
-  if (!token) throw Error('No token found')
+  console.log('isActive:', await token.activated())
 
-  await token.deployed()
-
+  console.log('Finished setIsActive')
   console.log('Account balance:', ethers.utils.formatEther(await deployer.getBalance()))
-  console.log('Token deployed to:', token.address)
 }
 
 // We recommend this pattern to be able to use async/await everywhere

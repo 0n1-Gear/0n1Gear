@@ -9,7 +9,7 @@ import "base64-sol/base64.sol";
 
 contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     // @dev - copied from ON1 contract as poss variables
-    uint256 public constant ONI_GIFT = 300;
+    uint256 public constant ONI_GIFT = 77;
     uint256 public constant ONI_PUBLIC = 7_700;
     uint256 public constant ONI_MAX = ONI_GIFT + ONI_PUBLIC;
     uint256 public constant PURCHASE_LIMIT = 7;
@@ -674,6 +674,11 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         lookups[categories[5]] = [RING_1, RING_2, RING_3];
         lookups[categories[6]] = [KONOE_SHIDAN];
     }
+
+    function withdraw() external onlyOwner {
+    uint256 balance = address(this).balance;
+    payable(msg.sender).transfer(balance);
+  }
 
     function toString(uint256 value) internal pure returns (string memory) {
         // Inspired by OraclizeAPI's implementation - MIT license

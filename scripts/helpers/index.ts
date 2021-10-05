@@ -8,7 +8,7 @@ import config from '../../config'
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const getToken = async () => {
-  const Token = await ethers.getContractFactory('0n1Gear')
+  const Token = await ethers.getContractFactory('OniGear')
   let token = null
 
   if (config.HARDHAT_NETWORK === 'rinkeby') {
@@ -28,6 +28,4 @@ export const getToken = async () => {
 
 export const uniqueAddresses = () => {
   const addresses = fs.readFileSync(path.join(__dirname, 'output', 'snapshot_wallet.txt'))
-
-  cl
 }

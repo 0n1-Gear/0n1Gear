@@ -10,7 +10,7 @@ import config from '../config'
 
 async function main() {
   const [deployer] = await ethers.getSigners()
-  const Token = await ethers.getContractFactory('OniGear')
+  const Token = await ethers.getContractFactory('OniMock')
   let token
 
   console.log('Deploying contracts using account:', deployer.address)
@@ -19,10 +19,7 @@ async function main() {
   console.log('Executing Token deploy')
 
   if (config.HARDHAT_NETWORK === 'rinkeby') {
-    token = await Token.deploy('TestGearNFT', 'TSTGEAR')
-  } else if (config.HARDHAT_NETWORK === 'mainnet') {
-    console.log('Deploying to mainnet...');
-    token = await Token.deploy('0N1 Gear', '0N1GEAR')
+    token = await Token.deploy('TestGearMockNFT', 'TSTGEARMCK')
   }
 
   if (!token) throw Error('No token found')
