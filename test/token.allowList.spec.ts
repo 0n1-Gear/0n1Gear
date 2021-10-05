@@ -58,7 +58,7 @@ describe('Setup allow list', () => {
       expect(await token.ownerOf(99)).to.be.equal(notOwnerAddress)
 
       await expect(token.connect(notOwner).claimAllTokens({ value: price })).to.be.revertedWith(
-        'No Tokens left to mint',
+        'None left',
       )
     })
 
@@ -88,7 +88,7 @@ describe('Setup allow list', () => {
       })
 
       await expect(token.connect(notOwner2).claimAllTokens({ value: price.mul(ONI_ARRAY.length) })).to.be.revertedWith(
-        'No Tokens left to mint',
+        'None left',
       )
     })
 
@@ -130,7 +130,7 @@ describe('Setup allow list', () => {
       })
 
       await expect(token.connect(notOwner2).claimAllTokens({ value: price })).to.be.revertedWith(
-        'No Tokens left to mint',
+        'None left',
       )
     })
 
@@ -154,7 +154,7 @@ describe('Setup allow list', () => {
       expect(await token.ownerOf(299)).to.be.equal(notOwnerAddress)
 
       await expect(token.connect(notOwner).claimAllTokens({ value: price })).to.be.revertedWith(
-        'No Tokens left to mint',
+        'None left',
       )
     })
 
@@ -185,7 +185,7 @@ describe('Setup allow list', () => {
       }
 
       await expect(token.connect(notOwner).claimAllTokens({ value: price.mul((ONI_ARRAY.length)) })).to.be.revertedWith(
-        'No Tokens left to mint',
+        'None left',
       )
     })
   })
@@ -200,7 +200,7 @@ describe('Setup allow list', () => {
 
       const notOwnerAddress = await notOwner.getAddress()
 
-      await expect(token.connect(notOwner).claimAllTokens({ value: price })).to.be.revertedWith('Contract inactive')
+      await expect(token.connect(notOwner).claimAllTokens({ value: price })).to.be.revertedWith('Inactive')
     })
     it('Should not allow minting all after reserved phase', async () => {
       const { token, notOwner } = testContext
@@ -211,7 +211,7 @@ describe('Setup allow list', () => {
 
       const notOwnerAddress = await notOwner.getAddress()
 
-      await expect(token.connect(notOwner).claimAllTokens({ value: price })).to.be.revertedWith('Allow List inactive')
+      await expect(token.connect(notOwner).claimAllTokens({ value: price })).to.be.revertedWith('Allowed Inactive')
     })
     it('Should not allow minting all during contract inactive', async () => {
       const { token, notOwner } = testContext
@@ -222,7 +222,7 @@ describe('Setup allow list', () => {
 
       const notOwnerAddress = await notOwner.getAddress()
 
-      await expect(token.connect(notOwner).claimToken(100, { value: price })).to.be.revertedWith('Contract inactive')
+      await expect(token.connect(notOwner).claimToken(100, { value: price })).to.be.revertedWith('Inactive')
     })
     it('Should not allow minting single after reserved phase', async () => {
       const { token, notOwner } = testContext
@@ -233,7 +233,7 @@ describe('Setup allow list', () => {
 
       const notOwnerAddress = await notOwner.getAddress()
 
-      await expect(token.connect(notOwner).claimToken(100, { value: price })).to.be.revertedWith('Allow List inactive')
+      await expect(token.connect(notOwner).claimToken(100, { value: price })).to.be.revertedWith('Allowed Inactive')
     })
     it('Should not allow others to mint during reserved phase', async () => {
       const { token, notOwner2 } = testContext

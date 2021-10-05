@@ -94,7 +94,7 @@ describe('Setup allow list', () => {
 
       const notOwnerAddress = await notOwner.getAddress()
 
-      await expect(token.connect(notOwner).purchase(1, { value: price })).to.be.revertedWith('Contract inactive')
+      await expect(token.connect(notOwner).purchase(1, { value: price })).to.be.revertedWith('Inactive')
     })
     it('Should not allow minting during reserved phase', async () => {
       const { token, notOwner } = testContext
@@ -105,7 +105,7 @@ describe('Setup allow list', () => {
 
       const notOwnerAddress = await notOwner.getAddress()
 
-      await expect(token.connect(notOwner).purchase(1, { value: price })).to.be.revertedWith('Only from Allow List')
+      await expect(token.connect(notOwner).purchase(1, { value: price })).to.be.revertedWith('Allowed Inactive')
     })
     it('Try and mint too many', async () => {
       const { token, notOwner } = testContext
@@ -116,7 +116,7 @@ describe('Setup allow list', () => {
 
       expect(await token.balanceOf(notOwnerAddress)).to.be.equal(0)
 
-      await expect(token.connect(notOwner).purchase(8, { value: price.mul(8) })).to.be.revertedWith('Too much On1Gear')
+      await expect(token.connect(notOwner).purchase(8, { value: price.mul(8) })).to.be.revertedWith('Too many')
     })
   })
 })

@@ -1,6 +1,7 @@
 import { task } from 'hardhat/config'
 import '@nomiclabs/hardhat-waffle'
 import '@nomiclabs/hardhat-etherscan'
+import 'hardhat-contract-sizer';
 
 import config from './config'
 
@@ -68,7 +69,7 @@ module.exports = {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200,
+        runs: 100,
       },
     },
   },

@@ -8,14 +8,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "base64-sol/base64.sol";
 
 contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
-    uint256 public constant GEAR_MAX = 7_777;
-    uint256 public constant PURCHASE_LIMIT = 7;
+    uint256 public GEAR_MAX = 7_777;
+    uint256 public PURCHASE_LIMIT = 7;
 
     bool public activated;
     bool public isAllowListActive;
 
-    uint256 public constant PRICE_ONI = 0.025 ether;
-    uint256 public constant PRICE_PUBLIC = 0.05 ether;
+    uint256 public PRICE_ONI = 0.025 ether;
+    uint256 public PRICE_PUBLIC = 0.05 ether;
 
     uint256 private _tokenCount;
     mapping(uint256 => bool) private _claimedList;
@@ -91,7 +91,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     string private RING_3 = "Kiiro";
 
     //SPECIAL TITLE
-    string private constant KONOE_SHIDAN = "Konoe Shidan";
+    string private KONOE_SHIDAN = "Konoe Shidan";
 
     string[] private categories = [
         PRIMARY_WEAPON_CATEGORY,
@@ -289,15 +289,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         NAME_SUFFIX_21
     ];
 
-    // bytes32 private SVG_PART_1 = ;
-    // bytes32 private SVG_PART_2 = '" class="base">';
-    // bytes32 private SVG_PART_3 = "</text></svg>";
-
-    // bytes32 private OUTPUT_START_STRING = ;
-    // bytes32 private JSON_STRING = ;
-    // bytes32 private BRACES = ;
-    // bytes32 private PLUS_ONE = ;
-
     function random(string memory seed, uint256 offset)
         internal
         pure
@@ -315,7 +306,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     // https://etherscan.io/address/0xdD301BB7734d0e269A614766c00509df735B254c
 
     function getRandomGaussianNumbers(string memory seed)
-        public
+        internal
         pure
         returns (uint256[8] memory)
     {
@@ -429,16 +420,28 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         );
         //Optimise the tokenURI process by making a loop and using variables stored in mapping
         string[16] memory parts;
-        parts[
-            0
-        ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
+        string memory color;
+        if (greatnessArray[6] > 15) {
+            color = "F35A54";
+        } else {
+            color = "FFFFFF";
+        }
+        parts[0] = string(
+            abi.encodePacked(
+                '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base{fill:#fff;font-family:serif;font-size:14px}</style><rect width="100%" height="100%"/><svg x="150" y="20" width="50" height="50" viewBox="0 0 46 45" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)" fill="#',
+                color,
+                '"><path fill-rule="evenodd" clip-rule="evenodd" d="M40.99 22.199c0 9.499-7.876 17.2-17.591 17.2s-17.59-7.701-17.59-17.2c0-9.5 7.875-17.2 17.59-17.2s17.59 7.7 17.59 17.2Zm-20.43-6.985v-2.76l-2.83-.006v2.766h-1.424v13.93h14.256v-13.93h-1.444v-2.75l-2.819-.016v2.766h-5.74Zm-1.41 11.194h8.538V18H19.15v8.408Zm5.364-7.23-4.145 4.053 1.978 1.935 4.145-4.053-1.978-1.934Z"/><path d="M23.404.201a22.868 22.868 0 0 0-12.503 3.706 22.117 22.117 0 0 0-8.29 9.873 21.549 21.549 0 0 0-1.283 12.713A21.855 21.855 0 0 0 7.485 37.76a22.665 22.665 0 0 0 11.522 6.023c4.365.85 8.89.414 13.002-1.251a22.4 22.4 0 0 0 10.1-8.104A21.656 21.656 0 0 0 45.9 22.204c0-5.835-2.37-11.43-6.589-15.557C35.094 2.521 29.372.203 23.404.201Zm.056 41.544a20.486 20.486 0 0 1-11.2-3.322 19.813 19.813 0 0 1-7.424-8.846A19.305 19.305 0 0 1 3.689 18.19 19.58 19.58 0 0 1 9.206 8.096a20.305 20.305 0 0 1 10.321-5.394c3.91-.76 7.964-.37 11.648 1.122a20.068 20.068 0 0 1 9.047 7.26 19.4 19.4 0 0 1 3.397 10.95c0 2.588-.521 5.152-1.535 7.543a19.686 19.686 0 0 1-4.37 6.395 20.195 20.195 0 0 1-6.54 4.273c-2.445.99-5.066 1.5-7.714 1.5Z"/></g><defs><clipPath id="clip0"><path fill="#"',
+                color,
+                'transform="translate(.901 .201)" d="M0 0h45v44H0z"/></clipPath></defs></svg><text x="10" y="100" class="base">'
+            )
+        );
         for (uint256 i = 0; i < 7; i++) {
             uint256 position = i * 2 + 1;
             parts[position] = pluck(tokenId, categories[i], greatnessArray[i]);
             parts[position + 1] = string(
                 abi.encodePacked(
                     '</text><text x="10" y="',
-                    toString((position + 2) * 20),
+                    toString(100 + ((i + 1) * 30)),
                     '" class="base">'
                 )
             );
@@ -491,7 +494,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         return output;
     }
 
-    function totalSupply() public view returns (uint256 supply) {
+    function totalSupply() external view returns (uint256 supply) {
         return _tokenCount;
     }
 
@@ -512,15 +515,12 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     }
 
     function purchase(uint256 numberOfTokens) external payable nonReentrant {
-        require(activated, "Contract inactive");
-        require(!isAllowListActive, "Only from Allow List");
-        require(_tokenCount < GEAR_MAX, "All tokens minted");
-        require(
-            _tokenCount + numberOfTokens <= GEAR_MAX,
-            "Purchase > ONI_PUBLIC"
-        );
-        require(PRICE_PUBLIC * numberOfTokens <= msg.value, "ETH insufficient");
-        require(numberOfTokens <= PURCHASE_LIMIT, "Too much On1Gear");
+        require(activated, "Inactive");
+        require(!isAllowListActive, "Allowed Inactive");
+        require(_tokenCount < GEAR_MAX, "All minted");
+        require(_tokenCount + numberOfTokens <= GEAR_MAX, "None Left");
+        require(PRICE_PUBLIC * numberOfTokens <= msg.value, "ETH inadequate");
+        require(numberOfTokens <= PURCHASE_LIMIT, "Too many");
         for (uint256 i = 0; i < numberOfTokens; i++) {
             uint256 idToMint;
             //Want to start any token IDs at 1, not 0
@@ -557,9 +557,9 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     }
 
     function claimAllTokens() external payable {
-        require(activated, "Contract inactive");
-        require(isAllowListActive, "Allow List inactive");
-        require(_tokenCount < GEAR_MAX, "All tokens minted");
+        require(activated, "Inactive");
+        require(isAllowListActive, "Allowed Inactive");
+        require(_tokenCount < GEAR_MAX, "All minted");
         uint256[] memory tokensOwnedByAddress = getTokenIdsForOni(msg.sender);
 
         // Loop through all tokens available to this address and calculate how many are unclaimed.
@@ -573,8 +573,8 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 unclaimedOnis++;
             }
         }
-        require(unclaimedOnis > 0, "No Tokens left to mint");
-        require(PRICE_ONI * unclaimedOnis <= msg.value, "ETH insufficient");
+        require(unclaimedOnis > 0, "None left");
+        require(PRICE_ONI * unclaimedOnis <= msg.value, "ETH inadequate");
 
         for (uint256 j = 0; j < tokensOwnedByAddress.length; j++) {
             uint256 tokenId = tokensOwnedByAddress[j];
@@ -588,10 +588,10 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     }
 
     function claimToken(uint256 oniId) external payable {
-        require(activated, "Contract inactive");
-        require(isAllowListActive, "Allow List inactive");
-        require(_tokenCount < GEAR_MAX, "All tokens minted");
-        require(PRICE_ONI <= msg.value, "ETH insufficient");
+        require(activated, "Inactive");
+        require(isAllowListActive, "Allowed Inactive");
+        require(_tokenCount < GEAR_MAX, "All minted");
+        require(PRICE_ONI <= msg.value, "ETH inadequate");
         bool alreadyClaimed = _claimedList[oniId];
         require(!alreadyClaimed, "Already minted");
         uint256[] memory tokensOwnedByAddress = getTokenIdsForOni(msg.sender);
@@ -603,7 +603,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 break;
             }
         }
-        require(isOwned, "Not authorised");
+        require(isOwned, "Not owned");
         _tokenCount++;
         _claimedList[oniId] = true;
         _safeMint(msg.sender, oniId);
@@ -686,17 +686,5 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             value /= 10;
         }
         return string(buffer);
-    }
-
-    function bytes32ToStr(bytes32 _bytes32)
-        public
-        pure
-        returns (string memory)
-    {
-        bytes memory bytesArray = new bytes(32);
-        for (uint256 i; i < 32; i++) {
-            bytesArray[i] = _bytes32[i];
-        }
-        return string(bytesArray);
     }
 }
