@@ -293,7 +293,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     ];
 
     bytes32 private SVG_PART_1 = '</text><text x="10" y="';
-    bytes32 private SVG_PART_2 = ' class="base">';
+    bytes32 private SVG_PART_2 = '" class="base">';
     bytes32 private SVG_PART_3 = "</text></svg>";
 
     bytes32 private OUTPUT_START_STRING = '{"name": "Gear # ';
@@ -516,7 +516,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             _tokenCount + numberOfTokens <= ONI_PUBLIC,
             "Purchase > ONI_PUBLIC"
         );
-        require(PRICE_ONI * numberOfTokens <= msg.value, "ETH insufficient");
+        require(PRICE_PUBLIC * numberOfTokens <= msg.value, "ETH insufficient");
         require(numberOfTokens <= PURCHASE_LIMIT, "Too much On1Gear");
         for (uint256 i = 0; i < numberOfTokens; i++) {
             uint256 idToMint;
