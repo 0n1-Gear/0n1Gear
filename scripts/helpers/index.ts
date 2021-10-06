@@ -26,6 +26,24 @@ export const getToken = async () => {
   return token
 }
 
+export const getMockToken = async () => {
+  const Token = await ethers.getContractFactory('TestGearMockNFT')
+  let token = null
+
+  if (config.HARDHAT_NETWORK === 'rinkeby') {
+    token = await Token.attach(config.RINKEBY_ONI_CONTRACT_ADDRESS)
+  } else if (config.HARDHAT_NETWORK === 'mainnet') {
+    // token = await Token.attach(config.MAINNET_ONI_CONTRACT_ADDRESS)
+  } else if (config.HARDHAT_NETWORK === 'hardhat') {
+    // token = await Token.attach(config.MAINNET_CONTRACT_ADDRESS)
+  }
+
+  if (!token) {
+    throw Error('No token found')
+  }
+
+  return token
+}
 export const uniqueAddresses = () => {
   const addresses = fs.readFileSync(path.join(__dirname, 'output', 'snapshot_wallet.txt'))
 }

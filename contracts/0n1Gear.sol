@@ -37,27 +37,28 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
 
     //MIXED PRIMARY OR SECONDARY (OR BOTH) WEAPONS
     string private M_WEAPON_1 = "Katana";
-    string private M_WEAPON_2 = "Energy Bolt";
+    string private M_WEAPON_2 = "Kukri";
     string private M_WEAPON_3 = "Dagger";
-    string private M_WEAPON_4 = "Tactical Staff";
-    string private M_WEAPON_5 = "Neo Sai";
-    string private M_WEAPON_6 = "Axe";
+    string private M_WEAPON_4 = "Neo Sai";
+    string private M_WEAPON_5 = "Axe";
 
     //PRIMARY WEAPONS
     string private P_WEAPON_1 = "Naginata";
     string private P_WEAPON_2 = "Compound Bow";
-    string private P_WEAPON_3 = "Kukri";
+    string private P_WEAPON_3 = "Energy Bolt";
     string private P_WEAPON_4 = "Kanabo";
     string private P_WEAPON_5 = "Railgun";
     string private P_WEAPON_6 = "Odachi";
+    string private P_WEAPON_7 = "Tactical Staff";
 
     //SECONDARY WEAPONS
-    string private S_WEAPON_1 = "Suriken";
+    string private S_WEAPON_1 = "Shuriken";
     string private S_WEAPON_2 = "Flame Talisman";
     string private S_WEAPON_3 = "Spider Drones";
     string private S_WEAPON_4 = "Tanto";
     string private S_WEAPON_5 = "Kunai";
     string private S_WEAPON_6 = "Nanite Dust";
+    string private S_WEAPON_7 = "EMP Grenade";
 
     //WAIST ITEMS
     string private WAIST_1 = "Tactical Belt";
@@ -185,15 +186,14 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     string private NAME_PREFIX_22 = "Phantom";
     string private NAME_PREFIX_23 = "Oath";
     string private NAME_PREFIX_24 = "Luminous";
-    string private NAME_PREFIX_25 = "Irredescent";
+    string private NAME_PREFIX_25 = "Iridescent";
     string private NAME_PREFIX_26 = "Forsaken";
     string private NAME_PREFIX_27 = "Glory";
     string private NAME_PREFIX_28 = "Plague";
     string private NAME_PREFIX_29 = "Rebellious";
     string private NAME_PREFIX_30 = "Ceaseless";
-    string private NAME_PREFIX_31 = "Dishonered";
+    string private NAME_PREFIX_31 = "Dishonored";
     string private NAME_PREFIX_32 = "Silent";
-    string private NAME_PREFIX_33 = "Fate";
     string private NAME_PREFIX_34 = "Bound";
     string private NAME_PREFIX_35 = "Divine";
     string private NAME_PREFIX_36 = "Eerie";
@@ -235,7 +235,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         NAME_PREFIX_30,
         NAME_PREFIX_31,
         NAME_PREFIX_32,
-        NAME_PREFIX_33,
         NAME_PREFIX_34,
         NAME_PREFIX_35,
         NAME_PREFIX_36,
@@ -357,7 +356,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         }
         //In this case, only return where max greatness
         if (compareStringsbyBytes(keyPrefix, TITLE_CATEGORY)) {
-            if (greatness > 15) {
+            if (greatness < 6) {
                 return string(abi.encodePacked(KONOE_SHIDAN));
             } else {
                 return "";
@@ -415,15 +414,17 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         override
         returns (string memory)
     {
-        string memory stringTokenId = string(abi.encodePacked(tokenId));
+        // string memory stringTokenId = string(abi.encodePacked(tokenId));
         uint256[8] memory greatnessArray = getRandomGaussianNumbers(
-            stringTokenId
+            toString(tokenId)
         );
-        console.log('greatness = ',greatnessArray[6]);
+        if(greatnessArray[6] <6){
+        console.log('greatness contract = ',greatnessArray[6], 'tokenId = ',toString(tokenId));
+        }
         //Optimise the tokenURI process by making a loop and using variables stored in mapping
         string[16] memory parts;
         string memory color;
-        if (greatnessArray[6] > 15) {
+        if (greatnessArray[6] <6) {
             color = "F35A54";
         } else {
             color = "FFFFFF";
@@ -550,7 +551,9 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         returns (uint256[] memory tokenIds)
     {
         uint256 numberOfOnis = _oniContract.balanceOf(owner);
-        require(numberOfOnis > 0, "No Tokens to mint");
+        if(numberOfOnis == 0){
+          return new uint256[](0);
+        }
         uint256[] memory tokenIdsToReturn = new uint256[](numberOfOnis);
         for (uint256 i = 0; i < numberOfOnis; i++) {
             tokenIdsToReturn[i] = _oniContract.tokenOfOwnerByIndex(owner, i);
@@ -575,7 +578,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 unclaimedOnis++;
             }
         }
-        require(unclaimedOnis > 0, "None left");
+        require(unclaimedOnis > 0, "None to claim");
         require(PRICE_ONI * unclaimedOnis <= msg.value, "ETH inadequate");
 
         for (uint256 j = 0; j < tokensOwnedByAddress.length; j++) {
@@ -618,13 +621,13 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             M_WEAPON_3,
             M_WEAPON_4,
             M_WEAPON_5,
-            M_WEAPON_6,
             P_WEAPON_1,
             P_WEAPON_2,
             P_WEAPON_3,
             P_WEAPON_4,
             P_WEAPON_5,
-            P_WEAPON_6
+            P_WEAPON_6,
+            P_WEAPON_7
         ];
         lookups[categories[1]] = [
             S_WEAPON_1,
@@ -633,12 +636,12 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             S_WEAPON_4,
             S_WEAPON_5,
             S_WEAPON_6,
+            S_WEAPON_7,
             M_WEAPON_1,
             M_WEAPON_2,
             M_WEAPON_3,
-            M_WEAPON_4,
             M_WEAPON_5,
-            M_WEAPON_6
+            M_WEAPON_4
         ];
         lookups[categories[2]] = [WAIST_1, WAIST_2, WAIST_3, WAIST_4, WAIST_5];
         lookups[categories[3]] = [

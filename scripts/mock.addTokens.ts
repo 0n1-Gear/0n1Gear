@@ -6,32 +6,32 @@
 // import hre from 'hardhat'
 import { ethers } from 'hardhat'
 
-import { getToken } from './helpers'
+import { getMockToken } from './helpers'
 import config from '../config'
 
 async function main() {
   const [deployer] = await ethers.getSigners()
-  const token = await getToken()
+  const token = await getMockToken()
 
   console.log('Using account:', deployer.address)
   console.log('Account balance:', ethers.utils.formatEther(await deployer.getBalance()))
 
-  console.log('Executing setOniContractAddress')
+  console.log('Executing add Tokent to mock')
   let address
 
   if (config.HARDHAT_NETWORK === 'rinkeby') {
-    address = config.RINKEBY_ONI_CONTRACT_ADDRESS
+    address = 0x33F6E70f014eDdEC38DBB2c36740527820CE01e6
   } else if (config.HARDHAT_NETWORK === 'mainnet') {address = config.MAINNET_ONI_CONTRACT_ADDRESS
   }
 
-  const setOniContractAddressTx = await token.setOwnerOnis(address, {
+  const setOniContractAddressTx = await token.setOwnerOnis(address, [508], {
     maxFeePerGas: 60_000_000_000,
     maxPriorityFeePerGas: 2_000_000_000,
     // nonce: 1,
   })
   await setOniContractAddressTx.wait()
 
-  console.log('Finished setOniContractAddress')
+  console.log('Finished add Tokent to mock')
   console.log('Account balance:', ethers.utils.formatEther(await deployer.getBalance()))
 }
 

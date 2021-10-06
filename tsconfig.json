@@ -11,7 +11,8 @@
     "skipLibCheck": false,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2018"
+    "target": "ES2018",
+    "suppressImplicitAnyIndexErrors":true
   },
   "include": ["hardhat.config.ts", "config/**/*.ts", "scripts/**/*.ts", "test/**/*.ts"]
 }

@@ -58,7 +58,7 @@ describe('Setup allow list', () => {
       expect(await token.ownerOf(99)).to.be.equal(notOwnerAddress)
 
       await expect(token.connect(notOwner).claimAllTokens({ value: price })).to.be.revertedWith(
-        'None left',
+        'None to claim',
       )
     })
 
@@ -88,7 +88,7 @@ describe('Setup allow list', () => {
       })
 
       await expect(token.connect(notOwner2).claimAllTokens({ value: price.mul(ONI_ARRAY.length) })).to.be.revertedWith(
-        'None left',
+        'None to claim',
       )
     })
 
@@ -130,7 +130,7 @@ describe('Setup allow list', () => {
       })
 
       await expect(token.connect(notOwner2).claimAllTokens({ value: price })).to.be.revertedWith(
-        'None left',
+        'None to claim',
       )
     })
 
@@ -154,7 +154,7 @@ describe('Setup allow list', () => {
       expect(await token.ownerOf(299)).to.be.equal(notOwnerAddress)
 
       await expect(token.connect(notOwner).claimAllTokens({ value: price })).to.be.revertedWith(
-        'None left',
+        'None to claim',
       )
     })
 
@@ -185,7 +185,7 @@ describe('Setup allow list', () => {
       }
 
       await expect(token.connect(notOwner).claimAllTokens({ value: price.mul((ONI_ARRAY.length)) })).to.be.revertedWith(
-        'None left',
+        'None to claim',
       )
     })
   })
@@ -244,7 +244,7 @@ describe('Setup allow list', () => {
 
       expect(await token.balanceOf(notOwner2Address)).to.be.equal(0)
 
-      await expect(token.connect(notOwner2).claimAllTokens({ value: price })).to.be.revertedWith('No Tokens to mint')
+      await expect(token.connect(notOwner2).claimAllTokens({ value: price })).to.be.revertedWith('None to claim')
     })
     it('Should not be able to mint when already claimed', async () => {
       const { mockToken, token, notOwner } = testContext
@@ -284,7 +284,7 @@ describe('Setup allow list', () => {
 
       await mockToken.setOwnerOnis(notOwnerAddress, [299])
 
-      await expect(token.connect(notOwner2).claimToken(299, { value: price })).to.be.revertedWith('No Tokens to mint');
+      await expect(token.connect(notOwner2).claimToken(299, { value: price })).to.be.revertedWith('Not owned');
 
       expect(await token.balanceOf(notOwner2Address)).to.be.equal(0)
 
