@@ -9,11 +9,8 @@ let testContext: {
   notOwner2: Signer
 }
 
-const NAME = '0N1Gear'
-const SYMBOL = '0N1Gear'
-const MOCK_NAME = '0N1GearMock'
-const MOCK_SYMBOL = '0N1GearMock'
-const PURCHASE_LIMIT = 7
+const NAME = '0N1 Gear'
+const SYMBOL = '0N1GEAR'
 
 describe('Setup allow list', () => {
   beforeEach(async () => {

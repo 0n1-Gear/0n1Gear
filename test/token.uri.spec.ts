@@ -1,7 +1,6 @@
 import { BigNumber, Contract, Signer } from 'ethers'
-import { expect } from 'chai'
 import { ethers } from 'hardhat'
-import { base64, keccak256, defaultAbiCoder, ParamType, solidityKeccak256 } from 'ethers/lib/utils'
+import { solidityKeccak256 } from 'ethers/lib/utils'
 
 let testContext: {
   token: Contract
@@ -9,9 +8,8 @@ let testContext: {
   notOwner: Signer
 }
 
-const NAME = '0N1Gear'
-const SYMBOL = '0N1Gear'
-const PURCHASE_LIMIT = 7
+const NAME = '0N1 Gear'
+const SYMBOL = '0N1GEAR'
 
 const PREFIXES_1 = 'Ornate'
 const PREFIXES_2 = 'Bloodied'
@@ -321,7 +319,7 @@ lookups[categories[1]] = [
   M_WEAPON_5,
   M_WEAPON_4,
 ]
-const MAX = 7777;
+const MAX = 7777
 lookups[categories[2]] = [WAIST_1, WAIST_2, WAIST_3, WAIST_4, WAIST_5]
 lookups[categories[3]] = [HANDS_1, HANDS_2, HANDS_3, HANDS_4, HANDS_5, HANDS_6, HANDS_7, HANDS_8]
 lookups[categories[4]] = [FEET_1, FEET_2, FEET_3, FEET_4, FEET_5, FEET_6]
@@ -356,8 +354,8 @@ function getRandomGaussianNumbers(seed: number): number[] {
   return numbers
 }
 function pluck(tokenId: number, keyPrefix: string, greatness: number): string {
-  const sourceArray = lookups[keyPrefix];
-  const rand = BigNumber.from(random(keyPrefix, tokenId)).and(max64BitNumber).toNumber();
+  const sourceArray = lookups[keyPrefix]
+  const rand = BigNumber.from(random(keyPrefix, tokenId)).and(max64BitNumber).toNumber()
   let output = sourceArray[rand % sourceArray.length]
   if (keyPrefix === HAND_CATEGORY) {
     output = output + ' ' + HANDS_SUFFIX
@@ -406,10 +404,10 @@ function tokenURI(tokenId: number): string {
     color = 'FFFFFF'
   }
   let output: string =
-    '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base{fill:#fff;font-family:serif;font-size:14px}</style><rect width="100%" height="100%"/><svg x="150" y="20" width="50" height="50" viewBox="0 0 46 45" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)" fill="#'
-   + color +
-    '"><path fill-rule="evenodd" clip-rule="evenodd" d="M40.99 22.199c0 9.499-7.876 17.2-17.591 17.2s-17.59-7.701-17.59-17.2c0-9.5 7.875-17.2 17.59-17.2s17.59 7.7 17.59 17.2Zm-20.43-6.985v-2.76l-2.83-.006v2.766h-1.424v13.93h14.256v-13.93h-1.444v-2.75l-2.819-.016v2.766h-5.74Zm-1.41 11.194h8.538V18H19.15v8.408Zm5.364-7.23-4.145 4.053 1.978 1.935 4.145-4.053-1.978-1.934Z"/><path d="M23.404.201a22.868 22.868 0 0 0-12.503 3.706 22.117 22.117 0 0 0-8.29 9.873 21.549 21.549 0 0 0-1.283 12.713A21.855 21.855 0 0 0 7.485 37.76a22.665 22.665 0 0 0 11.522 6.023c4.365.85 8.89.414 13.002-1.251a22.4 22.4 0 0 0 10.1-8.104A21.656 21.656 0 0 0 45.9 22.204c0-5.835-2.37-11.43-6.589-15.557C35.094 2.521 29.372.203 23.404.201Zm.056 41.544a20.486 20.486 0 0 1-11.2-3.322 19.813 19.813 0 0 1-7.424-8.846A19.305 19.305 0 0 1 3.689 18.19 19.58 19.58 0 0 1 9.206 8.096a20.305 20.305 0 0 1 10.321-5.394c3.91-.76 7.964-.37 11.648 1.122a20.068 20.068 0 0 1 9.047 7.26 19.4 19.4 0 0 1 3.397 10.95c0 2.588-.521 5.152-1.535 7.543a19.686 19.686 0 0 1-4.37 6.395 20.195 20.195 0 0 1-6.54 4.273c-2.445.99-5.066 1.5-7.714 1.5Z"/></g><defs><clipPath id="clip0"><path fill="#'
- + color +
+    '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base{fill:#fff;font-family:serif;font-size:14px}</style><rect width="100%" height="100%"/><svg x="150" y="20" width="50" height="50" viewBox="0 0 46 45" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)" fill="#' +
+    color +
+    '"><path fill-rule="evenodd" clip-rule="evenodd" d="M40.99 22.199c0 9.499-7.876 17.2-17.591 17.2s-17.59-7.701-17.59-17.2c0-9.5 7.875-17.2 17.59-17.2s17.59 7.7 17.59 17.2Zm-20.43-6.985v-2.76l-2.83-.006v2.766h-1.424v13.93h14.256v-13.93h-1.444v-2.75l-2.819-.016v2.766h-5.74Zm-1.41 11.194h8.538V18H19.15v8.408Zm5.364-7.23-4.145 4.053 1.978 1.935 4.145-4.053-1.978-1.934Z"/><path d="M23.404.201a22.868 22.868 0 0 0-12.503 3.706 22.117 22.117 0 0 0-8.29 9.873 21.549 21.549 0 0 0-1.283 12.713A21.855 21.855 0 0 0 7.485 37.76a22.665 22.665 0 0 0 11.522 6.023c4.365.85 8.89.414 13.002-1.251a22.4 22.4 0 0 0 10.1-8.104A21.656 21.656 0 0 0 45.9 22.204c0-5.835-2.37-11.43-6.589-15.557C35.094 2.521 29.372.203 23.404.201Zm.056 41.544a20.486 20.486 0 0 1-11.2-3.322 19.813 19.813 0 0 1-7.424-8.846A19.305 19.305 0 0 1 3.689 18.19 19.58 19.58 0 0 1 9.206 8.096a20.305 20.305 0 0 1 10.321-5.394c3.91-.76 7.964-.37 11.648 1.122a20.068 20.068 0 0 1 9.047 7.26 19.4 19.4 0 0 1 3.397 10.95c0 2.588-.521 5.152-1.535 7.543a19.686 19.686 0 0 1-4.37 6.395 20.195 20.195 0 0 1-6.54 4.273c-2.445.99-5.066 1.5-7.714 1.5Z"/></g><defs><clipPath id="clip0"><path fill="#' +
+    color +
     '" transform="translate(.901 .201)" d="M0 0h45v44H0z"/></clipPath></defs></svg><text x="10" y="100" class="base">'
 
   for (let i = 0; i < 7; i++) {
@@ -418,7 +416,7 @@ function tokenURI(tokenId: number): string {
   }
 
   output += '</text></svg>'
-return output;
+  return output
   // const json = encode(
   //   '{"name": "Gear # ' +
   //     tokenId +
@@ -429,14 +427,13 @@ return output;
   // let finalOutput = 'data:application/json;base64,' + json
   // return finalOutput
 }
-const calcualtePercentage = (obj:any) => {
-  Object.keys(obj).forEach(key => {
-  if (typeof obj[key] === 'object') {
-    calcualtePercentage(obj[key])
-      }
-      else{
-        obj[key] = ((obj[key] / MAX) * 100).toFixed(2) + '%'
-      }
+const calcualtePercentage = (obj: any) => {
+  Object.keys(obj).forEach((key) => {
+    if (typeof obj[key] === 'object') {
+      calcualtePercentage(obj[key])
+    } else {
+      obj[key] = ((obj[key] / MAX) * 100).toFixed(2) + '%'
+    }
   })
 }
 describe('Check URI', () => {
@@ -470,7 +467,7 @@ describe('Check URI', () => {
         name_suffixes: {},
         primary: {},
         secondary: {},
-        doubles:{},
+        doubles: {},
         waist: {},
         hands: {},
         feet: {},
@@ -521,7 +518,7 @@ describe('Check URI', () => {
           }
         })
         PRIMARY.forEach((item) => {
-          const occurances = svg.split(item).length -1;
+          const occurances = svg.split(item).length - 1
           if (occurances === 1) {
             if (!results.primary[item]) {
               results.primary[item] = 0
@@ -536,7 +533,7 @@ describe('Check URI', () => {
           }
         })
         SECONDARY.forEach((item) => {
-          const occurances = svg.split(item).length -1;
+          const occurances = svg.split(item).length - 1
           if (occurances === 1) {
             if (!results.secondary[item]) {
               results.secondary[item] = 0
@@ -579,8 +576,8 @@ describe('Check URI', () => {
         i++
       }
       console.log(results)
-      const resultsCopy = Object.assign({},results);
-      calcualtePercentage(resultsCopy);
+      const resultsCopy = Object.assign({}, results)
+      calcualtePercentage(resultsCopy)
       console.log(resultsCopy)
     })
   })

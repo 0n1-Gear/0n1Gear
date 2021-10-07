@@ -8,8 +8,8 @@ let testContext: {
   notOwner: Signer
 }
 
-const NAME = '0N1Gear'
-const SYMBOL = '0N1Gear'
+const NAME = '0N1 Gear'
+const SYMBOL = '0N1GEAR'
 const PURCHASE_LIMIT = 7
 
 describe('Purchase tokens', () => {

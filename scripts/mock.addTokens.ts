@@ -17,14 +17,15 @@ async function main() {
   console.log('Account balance:', ethers.utils.formatEther(await deployer.getBalance()))
 
   console.log('Executing add Tokent to mock')
-  let address
+  let oniContractAddress
 
   if (config.HARDHAT_NETWORK === 'rinkeby') {
-    address = 0x33F6E70f014eDdEC38DBB2c36740527820CE01e6
-  } else if (config.HARDHAT_NETWORK === 'mainnet') {address = config.MAINNET_ONI_CONTRACT_ADDRESS
+    oniContractAddress = config.RINKEBY_ONI_CONTRACT_ADDRESS
+  } else if (config.HARDHAT_NETWORK === 'mainnet') {
+    oniContractAddress = config.MAINNET_ONI_CONTRACT_ADDRESS
   }
 
-  const setOniContractAddressTx = await token.setOwnerOnis(address, [508], {
+  const setOniContractAddressTx = await token.setOwnerOnis(oniContractAddress, [508], {
     maxFeePerGas: 60_000_000_000,
     maxPriorityFeePerGas: 2_000_000_000,
     // nonce: 1,

@@ -11,7 +11,7 @@ import { getToken } from './helpers'
 async function main() {
   const [deployer] = await ethers.getSigners()
   const token = await getToken()
-  const price = await token.PRICE_PUBLIC();
+  const price = await token.PRICE_PUBLIC()
 
   console.log('Using account:', deployer.address)
   console.log('Account balance:', ethers.utils.formatEther(await deployer.getBalance()))
@@ -21,7 +21,7 @@ async function main() {
   const purchaseTx = await token.purchase(1, {
     maxFeePerGas: 60_000_000_000,
     maxPriorityFeePerGas: 2_000_000_000,
-    value:price
+    value: price,
     // nonce: 1,
   })
   await purchaseTx.wait()

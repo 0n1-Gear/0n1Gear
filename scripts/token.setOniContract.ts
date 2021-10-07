@@ -21,7 +21,8 @@ async function main() {
 
   if (config.HARDHAT_NETWORK === 'rinkeby') {
     address = config.RINKEBY_ONI_CONTRACT_ADDRESS
-  } else if (config.HARDHAT_NETWORK === 'mainnet') {address = config.MAINNET_ONI_CONTRACT_ADDRESS
+  } else if (config.HARDHAT_NETWORK === 'mainnet') {
+    address = config.MAINNET_ONI_CONTRACT_ADDRESS
   }
 
   const setOniContractAddressTx = await token.setOniContractAddress(address, {

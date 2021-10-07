@@ -1,19 +1,15 @@
-import { BigNumber,  Contract, Signer } from 'ethers'
+import { BigNumber, Contract, Signer } from 'ethers'
+import { expect } from 'chai'
 import { ethers } from 'hardhat'
 
-import { assert, expect } from "chai";
-
-const NAME = 'OniGear'
-const SYMBOL = '0N1'
+const NAME = '0N1 Gear'
+const SYMBOL = '0N1GEAR'
 const GEAR_MAX = 7_777
 const PURCHASE_LIMIT = 7
 const PRICE_ONI = BigNumber.from('25000000000000000')
 const PRICE_PUBLIC = BigNumber.from('50000000000000000')
 const activated = false
 const isAllowListActive = false
-const proof = ''
-const totalGiftSupply = 0
-const totalPublicSupply = 0
 
 const DEPLOY_VALUES: [string, string | number | BigNumber | boolean][] = [
   ['name', NAME],
@@ -32,34 +28,34 @@ let testContext: {
 }
 
 describe('Deploy token', () => {
-    beforeEach(async () => {
-      const Token = await ethers.getContractFactory('OniGear')
-      const token = await Token.deploy(NAME, SYMBOL)
-      const [owner, notOwner] = await ethers.getSigners()
+  beforeEach(async () => {
+    const Token = await ethers.getContractFactory('OniGear')
+    const token = await Token.deploy(NAME, SYMBOL)
+    const [owner, notOwner] = await ethers.getSigners()
 
-      testContext = {
-        token,
-        owner,
-        notOwner,
-      }
+    testContext = {
+      token,
+      owner,
+      notOwner,
+    }
+  })
+  describe('Happy path', () => {
+    DEPLOY_VALUES.forEach(([method, value]) => {
+      it(`Should get value for ${method}`, async () => {
+        const { token } = testContext
+
+        expect(await token[method]()).to.equal(value)
+      })
     })
-    describe('Happy path', () => {
-      DEPLOY_VALUES.forEach(([method, value]) => {
-        it(`Should get value for ${method}`, async () => {
-          const { token } = testContext
 
-          expect(await token[method]()).to.equal(value)
-        })
-      })
+    it('Should have owner', async () => {
+      const { token, owner } = testContext
+      const ownerAddr = await owner.getAddress()
 
-      it('Should have owner', async () => {
-        const { token, owner } = testContext
-        const ownerAddr = await owner.getAddress()
-
-        expect(await token.owner()).to.equal(ownerAddr)
-      })
+      expect(await token.owner()).to.equal(ownerAddr)
     })
   })
+})
 //   describe("Check outputs", async () => {
 //     it("Look for double daggers", async () => {
 //       let i = 1;

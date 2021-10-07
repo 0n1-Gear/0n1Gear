@@ -21,7 +21,7 @@ async function main() {
   if (config.HARDHAT_NETWORK === 'rinkeby') {
     token = await Token.deploy('TestGearNFT', 'TSTGEAR')
   } else if (config.HARDHAT_NETWORK === 'mainnet') {
-    console.log('Deploying to mainnet...');
+    console.log('Deploying to mainnet...')
     token = await Token.deploy('0N1 Gear', '0N1GEAR')
   }
 
