@@ -1,98 +1,101 @@
 pragma solidity ^0.8.6;
+
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "base64-sol/base64.sol";
 import "hardhat/console.sol";
 
+import "base64-sol/base64.sol";
+
 contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
-    // @dev - copied from ON1 contract as poss variables
-    uint256 public constant ONI_GIFT = 300;
-    uint256 public constant ONI_PUBLIC = 7_700;
-    uint256 public constant ONI_MAX = ONI_GIFT + ONI_PUBLIC;
-    uint256 public constant PURCHASE_LIMIT = 7;
+    uint256 public GEAR_MAX = 7_777;
+    uint256 public PURCHASE_LIMIT = 7;
+
     bool public activated;
     bool public isAllowListActive;
-    uint256 public constant PRICE_ONI = 0.025 ether;
-    uint256 public constant PRICE_PUBLIC = 0.05 ether;
+
+    uint256 public PRICE_ONI = 0.025 ether;
+    uint256 public PRICE_PUBLIC = 0.05 ether;
 
     uint256 private _tokenCount;
+    mapping(uint256 => bool) private _claimedList;
+    mapping(string => string[]) private lookups;
+
     address private _oniAddress;
     IERC721Enumerable private _oniContract;
-    mapping(uint256 => bool) private _claimedList;
-    mapping(bytes32 => bytes32[]) private lookups;
 
     // Optimise all variables using bytes32 instead of strings. Can't seem to initialise an array of bytes32 so have to create them individually
     // and add to mapping at construction. Seems most gas efficient as contract gas heavy due to everything on chain
-    bytes32 private PRIMARY_WEAPON_CATEGORY = "PRIMARY WEAPON";
-    bytes32 private SECONDARY_WEAPON_CATEGORY = "SECONDARY WEAPON";
-    bytes32 private WAIST_CATEGORY = "WAIST";
-    bytes32 private HAND_CATEGORY = "HAND";
-    bytes32 private FEET_CATEGORY = "FEET";
-    bytes32 private RINGS_CATEGORY = "RINGS";
-    bytes32 private TITLE_CATEGORY = "TITLE";
+    string private PRIMARY_WEAPON_CATEGORY = "PRIMARY WEAPON";
+    string private SECONDARY_WEAPON_CATEGORY = "SECONDARY WEAPON";
+    string private WAIST_CATEGORY = "WAIST";
+    string private HAND_CATEGORY = "HAND";
+    string private FEET_CATEGORY = "FEET";
+    string private RINGS_CATEGORY = "RINGS";
+    string private TITLE_CATEGORY = "TITLE";
 
     //MIXED PRIMARY OR SECONDARY (OR BOTH) WEAPONS
-    bytes32 private M_WEAPON_1 = "Katana";
-    bytes32 private M_WEAPON_2 = "Enegery bolt";
-    bytes32 private M_WEAPON_3 = "Dagger";
-    bytes32 private M_WEAPON_4 = "Tactical Staf";
-    bytes32 private M_WEAPON_5 = "Neo Sai";
-    bytes32 private M_WEAPON_6 = "Axe";
+    string private M_WEAPON_1 = "Katana";
+    string private M_WEAPON_2 = "Kukri";
+    string private M_WEAPON_3 = "Dagger";
+    string private M_WEAPON_4 = "Neo Sai";
+    string private M_WEAPON_5 = "Axe";
 
     //PRIMARY WEAPONS
-    bytes32 private P_WEAPON_1 = "Naginata";
-    bytes32 private P_WEAPON_2 = "Compound Bow";
-    bytes32 private P_WEAPON_3 = "Kukri";
-    bytes32 private P_WEAPON_4 = "Kanabo";
-    bytes32 private P_WEAPON_5 = "Railgun";
-    bytes32 private P_WEAPON_6 = "Odachi";
+    string private P_WEAPON_1 = "Naginata";
+    string private P_WEAPON_2 = "Compound Bow";
+    string private P_WEAPON_3 = "Energy Bolt";
+    string private P_WEAPON_4 = "Kanabo";
+    string private P_WEAPON_5 = "Railgun";
+    string private P_WEAPON_6 = "Odachi";
+    string private P_WEAPON_7 = "Tactical Staff";
 
     //SECONDARY WEAPONS
-    bytes32 private S_WEAPON_1 = "Suriken";
-    bytes32 private S_WEAPON_2 = "Flame Talisman";
-    bytes32 private S_WEAPON_3 = "Spider Drones";
-    bytes32 private S_WEAPON_4 = "Tanto";
-    bytes32 private S_WEAPON_5 = "Kunai";
-    bytes32 private S_WEAPON_6 = "Nanite dust";
+    string private S_WEAPON_1 = "Shuriken";
+    string private S_WEAPON_2 = "Flame Talisman";
+    string private S_WEAPON_3 = "Spider Drones";
+    string private S_WEAPON_4 = "Tanto";
+    string private S_WEAPON_5 = "Kunai";
+    string private S_WEAPON_6 = "Nanite Dust";
+    string private S_WEAPON_7 = "EMP Grenade";
 
     //WAIST ITEMS
-    bytes32 private WAIST_1 = "Tactical belt";
-    bytes32 private WAIST_2 = "Leg harness";
-    bytes32 private WAIST_3 = "Hip Pack";
-    bytes32 private WAIST_4 = "Cyber Belt";
-    bytes32 private WAIST_5 = "Obi";
+    string private WAIST_1 = "Tactical Belt";
+    string private WAIST_2 = "Leg Harness";
+    string private WAIST_3 = "Hip Pack";
+    string private WAIST_4 = "Cyber Belt";
+    string private WAIST_5 = "Obi";
 
     //HANDS ITEMS
-    bytes32 private HANDS_SUFFIX = "Gloves";
-    bytes32 private HANDS_1 = "Leather";
-    bytes32 private HANDS_2 = "Surgical";
-    bytes32 private HANDS_3 = "Techno";
-    bytes32 private HANDS_4 = "Silk";
-    bytes32 private HANDS_5 = "Spiked";
-    bytes32 private HANDS_6 = "Mech";
-    bytes32 private HANDS_7 = "Knuckled";
-    bytes32 private HANDS_8 = "Hardened";
+    string private HANDS_SUFFIX = "Gloves";
+    string private HANDS_1 = "Leather";
+    string private HANDS_2 = "Surgical";
+    string private HANDS_3 = "Techno";
+    string private HANDS_4 = "Silk";
+    string private HANDS_5 = "Spiked";
+    string private HANDS_6 = "Mech";
+    string private HANDS_7 = "Knuckled";
+    string private HANDS_8 = "Hardened";
 
     //FEET ITEMS
-    bytes32 private FEET_1 = "Rocker Boots";
-    bytes32 private FEET_2 = "Formal Shoes";
-    bytes32 private FEET_3 = "Techno Boots";
-    bytes32 private FEET_4 = "Jika-tabi";
-    bytes32 private FEET_5 = "Grav Sneakers";
-    bytes32 private FEET_6 = "0N1 Force Ones";
+    string private FEET_1 = "Rocker Boots";
+    string private FEET_2 = "Formal Shoes";
+    string private FEET_3 = "Techno Boots";
+    string private FEET_4 = "Jika-tabi";
+    string private FEET_5 = "Grav Sneakers";
+    string private FEET_6 = "0N1 Force Ones";
 
     //RINGS
-    bytes32 private RING_SUFFIX = "Ring";
-    bytes32 private RING_1 = "Ao";
-    bytes32 private RING_2 = "Aka";
-    bytes32 private RING_3 = "Kiiro";
+    string private RING_SUFFIX = "Ring";
+    string private RING_1 = "Ao";
+    string private RING_2 = "Aka";
+    string private RING_3 = "Kiiro";
 
     //SPECIAL TITLE
-    bytes32 private constant KONOE_SHIDAN = "Konoe Shidan";
+    string private KONOE_SHIDAN = "Konoe Shidan";
 
-    bytes32[] private categories = [
+    string[] private categories = [
         PRIMARY_WEAPON_CATEGORY,
         SECONDARY_WEAPON_CATEGORY,
         WAIST_CATEGORY,
@@ -102,22 +105,22 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         TITLE_CATEGORY
     ];
 
-    bytes32 private SUFFIXES_1 = "of Style";
-    bytes32 private SUFFIXES_2 = "of Spirit";
-    bytes32 private SUFFIXES_3 = "of Strength";
-    bytes32 private SUFFIXES_4 = "of Hope";
-    bytes32 private SUFFIXES_5 = "of Skill";
-    bytes32 private SUFFIXES_6 = "of Fury";
-    bytes32 private SUFFIXES_7 = "of Lost Memories";
-    bytes32 private SUFFIXES_8 = "of the Ebony Door";
-    bytes32 private SUFFIXES_9 = "of the Fallen";
-    bytes32 private SUFFIXES_10 = "of the Favoured";
-    bytes32 private SUFFIXES_11 = "of the Supreme";
-    bytes32 private SUFFIXES_12 = "of the Kami";
-    bytes32 private SUFFIXES_13 = "of the Siblings";
-    bytes32 private SUFFIXES_14 = "of the Emperor";
+    string private SUFFIXES_1 = "of Style";
+    string private SUFFIXES_2 = "of Spirit";
+    string private SUFFIXES_3 = "of Strength";
+    string private SUFFIXES_4 = "of Hope";
+    string private SUFFIXES_5 = "of Skill";
+    string private SUFFIXES_6 = "of Fury";
+    string private SUFFIXES_7 = "of Lost Memories";
+    string private SUFFIXES_8 = "of the Ebony Door";
+    string private SUFFIXES_9 = "of the Fallen";
+    string private SUFFIXES_10 = "of the Favoured";
+    string private SUFFIXES_11 = "of the Supreme";
+    string private SUFFIXES_12 = "of the Kami";
+    string private SUFFIXES_13 = "of the Siblings";
+    string private SUFFIXES_14 = "of the Emperor";
 
-    bytes32[] private suffixes = [
+    string[] private suffixes = [
         SUFFIXES_1,
         SUFFIXES_2,
         SUFFIXES_3,
@@ -133,19 +136,19 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         SUFFIXES_13,
         SUFFIXES_14
     ];
-    bytes32 private PREFIXES_1 = "Ornate";
-    bytes32 private PREFIXES_2 = "Bloodied";
-    bytes32 private PREFIXES_3 = "Galvanized";
-    bytes32 private PREFIXES_4 = "Ancient";
-    bytes32 private PREFIXES_5 = "Obsidian";
-    bytes32 private PREFIXES_6 = "Haunted";
-    bytes32 private PREFIXES_7 = "Ethereal";
-    bytes32 private PREFIXES_8 = "Enchanted";
-    bytes32 private PREFIXES_9 = "Infernal";
-    bytes32 private PREFIXES_10 = "Celestial";
-    bytes32 private PREFIXES_11 = "Cursed";
+    string private PREFIXES_1 = "Ornate";
+    string private PREFIXES_2 = "Bloodied";
+    string private PREFIXES_3 = "Galvanized";
+    string private PREFIXES_4 = "Ancient";
+    string private PREFIXES_5 = "Obsidian";
+    string private PREFIXES_6 = "Haunted";
+    string private PREFIXES_7 = "Ethereal";
+    string private PREFIXES_8 = "Enchanted";
+    string private PREFIXES_9 = "Infernal";
+    string private PREFIXES_10 = "Celestial";
+    string private PREFIXES_11 = "Cursed";
 
-    bytes32[] private prefixes = [
+    string[] private prefixes = [
         PREFIXES_1,
         PREFIXES_2,
         PREFIXES_3,
@@ -159,48 +162,47 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         PREFIXES_11
     ];
 
-    bytes32 private NAME_PREFIX_1 = "J3ST3R's";
-    bytes32 private NAME_PREFIX_2 = "WR1T3R's";
-    bytes32 private NAME_PREFIX_3 = "M33Kasa's";
-    bytes32 private NAME_PREFIX_4 = "L1NK's";
-    bytes32 private NAME_PREFIX_5 = "C4N4RY's";
-    bytes32 private NAME_PREFIX_6 = "R0S3's";
-    bytes32 private NAME_PREFIX_7 = "D34TH's";
-    bytes32 private NAME_PREFIX_8 = "Nameless";
-    bytes32 private NAME_PREFIX_9 = "Illusive";
-    bytes32 private NAME_PREFIX_10 = "Awakened";
-    bytes32 private NAME_PREFIX_11 = "Forgotten";
-    bytes32 private NAME_PREFIX_12 = "Damned";
-    bytes32 private NAME_PREFIX_13 = "Dawn";
-    bytes32 private NAME_PREFIX_14 = "Dusk";
-    bytes32 private NAME_PREFIX_15 = "Fate";
-    bytes32 private NAME_PREFIX_16 = "Howling";
-    bytes32 private NAME_PREFIX_17 = "Brutal";
-    bytes32 private NAME_PREFIX_18 = "Corporeal";
-    bytes32 private NAME_PREFIX_19 = "Peace";
-    bytes32 private NAME_PREFIX_20 = "Chaos";
-    bytes32 private NAME_PREFIX_21 = "Thunder";
-    bytes32 private NAME_PREFIX_22 = "Phantom";
-    bytes32 private NAME_PREFIX_23 = "Oath";
-    bytes32 private NAME_PREFIX_24 = "Luminous";
-    bytes32 private NAME_PREFIX_25 = "Irredescent";
-    bytes32 private NAME_PREFIX_26 = "Forsaken";
-    bytes32 private NAME_PREFIX_27 = "Glory";
-    bytes32 private NAME_PREFIX_28 = "Plague";
-    bytes32 private NAME_PREFIX_29 = "Rebellious";
-    bytes32 private NAME_PREFIX_30 = "Ceaseless";
-    bytes32 private NAME_PREFIX_31 = "Dishonered";
-    bytes32 private NAME_PREFIX_32 = "Silent";
-    bytes32 private NAME_PREFIX_33 = "Fate";
-    bytes32 private NAME_PREFIX_34 = "Bound";
-    bytes32 private NAME_PREFIX_35 = "Divine";
-    bytes32 private NAME_PREFIX_36 = "Eerie";
-    bytes32 private NAME_PREFIX_37 = "Limitless";
-    bytes32 private NAME_PREFIX_38 = "Quantum";
-    bytes32 private NAME_PREFIX_39 = "Living";
-    bytes32 private NAME_PREFIX_40 = "Bestial";
-    bytes32 private NAME_PREFIX_41 = "Barbaric";
-    bytes32[] private namePrefixes = [
+    string private NAME_PREFIX_1 = "J3ST3R's";
+    string private NAME_PREFIX_2 = "WR1T3R's";
+    string private NAME_PREFIX_3 = "M33Kasa's";
+    string private NAME_PREFIX_4 = "C4N4RY's";
+    string private NAME_PREFIX_5 = "R0S3's";
+    string private NAME_PREFIX_6 = "D34TH's";
+    string private NAME_PREFIX_7 = "One Source";
+    string private NAME_PREFIX_8 = "Nameless";
+    string private NAME_PREFIX_9 = "Illusive";
+    string private NAME_PREFIX_10 = "Awakened";
+    string private NAME_PREFIX_11 = "Forgotten";
+    string private NAME_PREFIX_12 = "Damned";
+    string private NAME_PREFIX_13 = "Dawn";
+    string private NAME_PREFIX_14 = "Dusk";
+    string private NAME_PREFIX_15 = "Fate";
+    string private NAME_PREFIX_16 = "Howling";
+    string private NAME_PREFIX_17 = "Brutal";
+    string private NAME_PREFIX_18 = "Corporeal";
+    string private NAME_PREFIX_19 = "Peace";
+    string private NAME_PREFIX_20 = "Chaos";
+    string private NAME_PREFIX_21 = "Thunder";
+    string private NAME_PREFIX_22 = "Phantom";
+    string private NAME_PREFIX_23 = "Oath";
+    string private NAME_PREFIX_24 = "Luminous";
+    string private NAME_PREFIX_25 = "Iridescent";
+    string private NAME_PREFIX_26 = "Forsaken";
+    string private NAME_PREFIX_27 = "Glory";
+    string private NAME_PREFIX_28 = "Plague";
+    string private NAME_PREFIX_29 = "Rebellious";
+    string private NAME_PREFIX_30 = "Ceaseless";
+    string private NAME_PREFIX_31 = "Dishonored";
+    string private NAME_PREFIX_32 = "Silent";
+    string private NAME_PREFIX_34 = "Bound";
+    string private NAME_PREFIX_35 = "Divine";
+    string private NAME_PREFIX_36 = "Eerie";
+    string private NAME_PREFIX_37 = "Limitless";
+    string private NAME_PREFIX_38 = "Quantum";
+    string private NAME_PREFIX_39 = "Living";
+    string private NAME_PREFIX_40 = "Bestial";
+    string private NAME_PREFIX_41 = "Barbaric";
+    string[] private namePrefixes = [
         NAME_PREFIX_1,
         NAME_PREFIX_2,
         NAME_PREFIX_3,
@@ -233,7 +235,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         NAME_PREFIX_30,
         NAME_PREFIX_31,
         NAME_PREFIX_32,
-        NAME_PREFIX_33,
         NAME_PREFIX_34,
         NAME_PREFIX_35,
         NAME_PREFIX_36,
@@ -243,28 +244,28 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         NAME_PREFIX_40,
         NAME_PREFIX_41
     ];
-    bytes32 private NAME_SUFFIX_1 = "Grasp";
-    bytes32 private NAME_SUFFIX_2 = "Whisper";
-    bytes32 private NAME_SUFFIX_3 = "Shadow";
-    bytes32 private NAME_SUFFIX_4 = "Torment";
-    bytes32 private NAME_SUFFIX_5 = "Will";
-    bytes32 private NAME_SUFFIX_6 = "Tears";
-    bytes32 private NAME_SUFFIX_7 = "Calling";
-    bytes32 private NAME_SUFFIX_8 = "Sun";
-    bytes32 private NAME_SUFFIX_9 = "Moon";
-    bytes32 private NAME_SUFFIX_10 = "Despair";
-    bytes32 private NAME_SUFFIX_11 = "Song";
-    bytes32 private NAME_SUFFIX_12 = "Pursuit";
-    bytes32 private NAME_SUFFIX_13 = "Rage";
-    bytes32 private NAME_SUFFIX_14 = "Lullaby";
-    bytes32 private NAME_SUFFIX_15 = "Dream";
-    bytes32 private NAME_SUFFIX_16 = "Kiss";
-    bytes32 private NAME_SUFFIX_17 = "Lust";
-    bytes32 private NAME_SUFFIX_18 = "Beacon";
-    bytes32 private NAME_SUFFIX_19 = "Binder";
-    bytes32 private NAME_SUFFIX_20 = "Remorse";
-    bytes32 private NAME_SUFFIX_21 = "Delusion";
-    bytes32[] private nameSuffixes = [
+    string private NAME_SUFFIX_1 = "Grasp";
+    string private NAME_SUFFIX_2 = "Whisper";
+    string private NAME_SUFFIX_3 = "Shadow";
+    string private NAME_SUFFIX_4 = "Torment";
+    string private NAME_SUFFIX_5 = "Will";
+    string private NAME_SUFFIX_6 = "Tears";
+    string private NAME_SUFFIX_7 = "Calling";
+    string private NAME_SUFFIX_8 = "Sun";
+    string private NAME_SUFFIX_9 = "Moon";
+    string private NAME_SUFFIX_10 = "Despair";
+    string private NAME_SUFFIX_11 = "Song";
+    string private NAME_SUFFIX_12 = "Pursuit";
+    string private NAME_SUFFIX_13 = "Rage";
+    string private NAME_SUFFIX_14 = "Lullaby";
+    string private NAME_SUFFIX_15 = "Dream";
+    string private NAME_SUFFIX_16 = "Kiss";
+    string private NAME_SUFFIX_17 = "Lust";
+    string private NAME_SUFFIX_18 = "Beacon";
+    string private NAME_SUFFIX_19 = "Binder";
+    string private NAME_SUFFIX_20 = "Remorse";
+    string private NAME_SUFFIX_21 = "Delusion";
+    string[] private nameSuffixes = [
         NAME_SUFFIX_1,
         NAME_SUFFIX_2,
         NAME_SUFFIX_3,
@@ -288,18 +289,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         NAME_SUFFIX_21
     ];
 
-    bytes32 private SVG_PART_1 = '</text><text x="10" y="';
-    bytes32 private SVG_PART_2 = ' class="base">';
-    bytes32 private SVG_PART_3 = "</text></svg>";
-
-    bytes32 private OUTPUT_START_STRING = '{"name": "Gear # ';
-    bytes32 private JSON_STRING = "data:application/json;base64,";
-    bytes32 private BRACES = '"}';
-    bytes32 private SPACE = " ";
-    bytes32 private END_QUOTES = '"';
-    bytes32 private COMMA_START_QUOTES = ', "';
-    bytes32 private PLUS_ONE = " +1";
-
     function random(string memory seed, uint256 offset)
         internal
         pure
@@ -317,7 +306,7 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     // https://etherscan.io/address/0xdD301BB7734d0e269A614766c00509df735B254c
 
     function getRandomGaussianNumbers(string memory seed)
-        public
+        internal
         pure
         returns (uint256[8] memory)
     {
@@ -342,25 +331,32 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         return numbers;
     }
 
+    function compareStringsbyBytes(string memory s1, string memory s2)
+        public
+        pure
+        returns (bool)
+    {
+        return (keccak256(abi.encodePacked((s1))) ==
+            keccak256(abi.encodePacked((s2))));
+    }
+
     function pluck(
         uint256 tokenId,
-        bytes32 keyPrefix,
+        string memory keyPrefix,
         uint256 greatness
     ) internal view returns (string memory) {
-        bytes32[] memory sourceArray = lookups[keyPrefix];
+        string[] memory sourceArray = lookups[keyPrefix];
         uint256 rand = random(string(abi.encodePacked(keyPrefix)), tokenId);
-        string memory output = string(
-            abi.encodePacked(sourceArray[rand % sourceArray.length])
-        );
-        if (keyPrefix == HAND_CATEGORY) {
-            output = string(abi.encodePacked(output, SPACE, HANDS_SUFFIX));
+        string memory output = sourceArray[rand % sourceArray.length];
+        if (compareStringsbyBytes(keyPrefix, HAND_CATEGORY)) {
+            output = string(abi.encodePacked(output, " ", HANDS_SUFFIX));
         }
-        if (keyPrefix == RINGS_CATEGORY) {
-            output = string(abi.encodePacked(output, SPACE, RING_SUFFIX));
+        if (compareStringsbyBytes(keyPrefix, RINGS_CATEGORY)) {
+            output = string(abi.encodePacked(output, " ", RING_SUFFIX));
         }
         //In this case, only return where max greatness
-        if (keyPrefix == TITLE_CATEGORY) {
-            if (greatness > 15) {
+        if (compareStringsbyBytes(keyPrefix, TITLE_CATEGORY)) {
+            if (greatness < 6) {
                 return string(abi.encodePacked(KONOE_SHIDAN));
             } else {
                 return "";
@@ -369,13 +365,13 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             if (greatness > 11 || greatness < 9) {
                 //For weapons, add a prefix as well to the item
                 if (
-                    keyPrefix == PRIMARY_WEAPON_CATEGORY ||
-                    keyPrefix == SECONDARY_WEAPON_CATEGORY
+                    compareStringsbyBytes(keyPrefix, PRIMARY_WEAPON_CATEGORY) ||
+                    compareStringsbyBytes(keyPrefix, SECONDARY_WEAPON_CATEGORY)
                 ) {
                     output = string(
                         abi.encodePacked(
                             prefixes[rand % prefixes.length],
-                            SPACE,
+                            " ",
                             output
                         )
                     );
@@ -384,26 +380,26 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                     output = string(
                         abi.encodePacked(
                             output,
-                            SPACE,
+                            " ",
                             suffixes[rand % suffixes.length]
                         )
                     );
                 }
                 if (greatness > 13 || greatness < 7) {
-                    bytes32[2] memory name;
+                    string[2] memory name;
                     name[0] = namePrefixes[rand % namePrefixes.length];
                     name[1] = nameSuffixes[rand % nameSuffixes.length];
                     if (greatness > 14 || greatness < 6) {
-                        output = string(abi.encodePacked(output, PLUS_ONE));
+                        output = string(abi.encodePacked(output, " +1"));
                     }
                     output = string(
                         abi.encodePacked(
                             output,
-                            COMMA_START_QUOTES,
+                            ', "',
                             name[0],
-                            SPACE,
+                            " ",
                             name[1],
-                            END_QUOTES
+                            '"'
                         )
                     );
                 }
@@ -418,29 +414,43 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         override
         returns (string memory)
     {
-        string memory stringTokenId = string(abi.encodePacked(tokenId));
-        // console.log("string token id = ", tokenId);
+        // string memory stringTokenId = string(abi.encodePacked(tokenId));
         uint256[8] memory greatnessArray = getRandomGaussianNumbers(
-            stringTokenId
+            toString(tokenId)
         );
+        if(greatnessArray[6] <6){
+        console.log('greatness contract = ',greatnessArray[6], 'tokenId = ',toString(tokenId));
+        }
         //Optimise the tokenURI process by making a loop and using variables stored in mapping
         string[16] memory parts;
-        parts[
-            0
-        ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
+        string memory color;
+        if (greatnessArray[6] <6) {
+            color = "F35A54";
+        } else {
+            color = "FFFFFF";
+        }
+        parts[0] = string(
+            abi.encodePacked(
+                '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base{fill:#fff;font-family:serif;font-size:14px}</style><rect width="100%" height="100%"/><svg x="150" y="20" width="50" height="50" viewBox="0 0 46 45" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)" fill="#',
+                color,
+                '"><path fill-rule="evenodd" clip-rule="evenodd" d="M40.99 22.199c0 9.499-7.876 17.2-17.591 17.2s-17.59-7.701-17.59-17.2c0-9.5 7.875-17.2 17.59-17.2s17.59 7.7 17.59 17.2Zm-20.43-6.985v-2.76l-2.83-.006v2.766h-1.424v13.93h14.256v-13.93h-1.444v-2.75l-2.819-.016v2.766h-5.74Zm-1.41 11.194h8.538V18H19.15v8.408Zm5.364-7.23-4.145 4.053 1.978 1.935 4.145-4.053-1.978-1.934Z"/><path d="M23.404.201a22.868 22.868 0 0 0-12.503 3.706 22.117 22.117 0 0 0-8.29 9.873 21.549 21.549 0 0 0-1.283 12.713A21.855 21.855 0 0 0 7.485 37.76a22.665 22.665 0 0 0 11.522 6.023c4.365.85 8.89.414 13.002-1.251a22.4 22.4 0 0 0 10.1-8.104A21.656 21.656 0 0 0 45.9 22.204c0-5.835-2.37-11.43-6.589-15.557C35.094 2.521 29.372.203 23.404.201Zm.056 41.544a20.486 20.486 0 0 1-11.2-3.322 19.813 19.813 0 0 1-7.424-8.846A19.305 19.305 0 0 1 3.689 18.19 19.58 19.58 0 0 1 9.206 8.096a20.305 20.305 0 0 1 10.321-5.394c3.91-.76 7.964-.37 11.648 1.122a20.068 20.068 0 0 1 9.047 7.26 19.4 19.4 0 0 1 3.397 10.95c0 2.588-.521 5.152-1.535 7.543a19.686 19.686 0 0 1-4.37 6.395 20.195 20.195 0 0 1-6.54 4.273c-2.445.99-5.066 1.5-7.714 1.5Z"/></g><defs><clipPath id="clip0"><path fill="#',
+                color,
+                '" transform="translate(.901 .201)" d="M0 0h45v44H0z"/></clipPath></defs></svg><text x="10" y="100" class="base">'
+            )
+        );
         for (uint256 i = 0; i < 7; i++) {
             uint256 position = i * 2 + 1;
             parts[position] = pluck(tokenId, categories[i], greatnessArray[i]);
             parts[position + 1] = string(
                 abi.encodePacked(
-                    SVG_PART_1,
-                    toString((position + 2) * 20),
-                    SVG_PART_2
+                    '</text><text x="10" y="',
+                    toString(100 + ((i + 1) * 30)),
+                    '" class="base">'
                 )
             );
         }
 
-        parts[15] = string(abi.encodePacked(SVG_PART_3));
+        parts[15] = string(abi.encodePacked("</text></svg>"));
 
         string memory output = string(
             abi.encodePacked(
@@ -468,25 +478,26 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             )
         );
 
-        // console.log(output);
         string memory json = Base64.encode(
             bytes(
                 string(
                     abi.encodePacked(
-                        OUTPUT_START_STRING,
+                        '{"name": "Gear # ',
                         toString(tokenId),
                         '", "description": "0N1 Gear is a derivative of Loot for 0N1 Force with randomized gear generated and stored on chain.", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(output)),
-                        BRACES
+                        '"}'
                     )
                 )
             )
         );
-        output = string(abi.encodePacked(JSON_STRING, json));
+        output = string(
+            abi.encodePacked("data:application/json;base64,", json)
+        );
         return output;
     }
 
-    function totalSupply() public view returns (uint256 supply) {
+    function totalSupply() external view returns (uint256 supply) {
         return _tokenCount;
     }
 
@@ -507,19 +518,16 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     }
 
     function purchase(uint256 numberOfTokens) external payable nonReentrant {
-        require(activated, "Contract inactive");
-        require(!isAllowListActive, "Only from Allow List");
-        require(_tokenCount < ONI_PUBLIC, "All tokens minted");
-        require(
-            _tokenCount + numberOfTokens <= ONI_PUBLIC,
-            "Purchase > ONI_PUBLIC"
-        );
-        require(PRICE_ONI * numberOfTokens <= msg.value, "ETH insufficient");
-        require(numberOfTokens <= PURCHASE_LIMIT, "Too much On1Gear");
+        require(activated, "Inactive");
+        require(!isAllowListActive, "Allowed Inactive");
+        require(_tokenCount < GEAR_MAX, "All minted");
+        require(_tokenCount + numberOfTokens <= GEAR_MAX, "None Left");
+        require(PRICE_PUBLIC * numberOfTokens <= msg.value, "ETH inadequate");
+        require(numberOfTokens <= PURCHASE_LIMIT, "Too many");
         for (uint256 i = 0; i < numberOfTokens; i++) {
             uint256 idToMint;
             //Want to start any token IDs at 1, not 0
-            for (uint256 j = 1; j < ONI_PUBLIC + 1; j++) {
+            for (uint256 j = 1; j < GEAR_MAX + 1; j++) {
                 if (!_claimedList[j]) {
                     idToMint = j;
                     //Add this here to ensure don't return the same value each time
@@ -538,12 +546,14 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     }
 
     function getTokenIdsForOni(address owner)
-        internal
+        public
         view
         returns (uint256[] memory tokenIds)
     {
         uint256 numberOfOnis = _oniContract.balanceOf(owner);
-        require(numberOfOnis > 0, "No Tokens to mint");
+        if(numberOfOnis == 0){
+          return new uint256[](0);
+        }
         uint256[] memory tokenIdsToReturn = new uint256[](numberOfOnis);
         for (uint256 i = 0; i < numberOfOnis; i++) {
             tokenIdsToReturn[i] = _oniContract.tokenOfOwnerByIndex(owner, i);
@@ -552,9 +562,9 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     }
 
     function claimAllTokens() external payable {
-        require(activated, "Contract inactive");
-        require(isAllowListActive, "Allow List inactive");
-        require(_tokenCount < ONI_PUBLIC, "All tokens minted");
+        require(activated, "Inactive");
+        require(isAllowListActive, "Allowed Inactive");
+        require(_tokenCount < GEAR_MAX, "All minted");
         uint256[] memory tokensOwnedByAddress = getTokenIdsForOni(msg.sender);
 
         // Loop through all tokens available to this address and calculate how many are unclaimed.
@@ -568,8 +578,8 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 unclaimedOnis++;
             }
         }
-        require(unclaimedOnis > 0, "No Tokens left to mint");
-        require(PRICE_ONI * unclaimedOnis <= msg.value, "ETH insufficient");
+        require(unclaimedOnis > 0, "None to claim");
+        require(PRICE_ONI * unclaimedOnis <= msg.value, "ETH inadequate");
 
         for (uint256 j = 0; j < tokensOwnedByAddress.length; j++) {
             uint256 tokenId = tokensOwnedByAddress[j];
@@ -583,10 +593,10 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
     }
 
     function claimToken(uint256 oniId) external payable {
-        require(activated, "Contract inactive");
-        require(isAllowListActive, "Allow List inactive");
-        require(_tokenCount < ONI_PUBLIC, "All tokens minted");
-        require(PRICE_ONI <= msg.value, "ETH insufficient");
+        require(activated, "Inactive");
+        require(isAllowListActive, "Allowed Inactive");
+        require(_tokenCount < GEAR_MAX, "All minted");
+        require(PRICE_ONI <= msg.value, "ETH inadequate");
         bool alreadyClaimed = _claimedList[oniId];
         require(!alreadyClaimed, "Already minted");
         uint256[] memory tokensOwnedByAddress = getTokenIdsForOni(msg.sender);
@@ -598,43 +608,26 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
                 break;
             }
         }
-        require(isOwned, "Not authorised");
+        require(isOwned, "Not owned");
         _tokenCount++;
         _claimedList[oniId] = true;
         _safeMint(msg.sender, oniId);
     }
 
-    function ownerClaim(uint256[] calldata oniIds) external onlyOwner {
-        require(activated, "Contract inactive");
-        // Loop twice to validate entire transaction OK
-        for (uint256 i = 0; i < oniIds.length; i++) {
-            uint256 oniId = oniIds[i];
-            require(oniId > ONI_PUBLIC && oniId <= ONI_MAX, "Token ID invalid");
-            bool alreadyClaimed = _claimedList[oniId];
-            require(!alreadyClaimed, "Already minted");
-        }
-        for (uint256 i = 0; i < oniIds.length; i++) {
-            uint256 oniId = oniIds[i];
-            _tokenCount++;
-            _claimedList[oniId] = true;
-            _safeMint(owner(), oniId);
-        }
-    }
-
-    constructor() ERC721("0N1 Gear", "0N1GEAR") Ownable() {
+    constructor(string memory name, string memory symbol) ERC721(name, symbol) {
         lookups[categories[0]] = [
             M_WEAPON_1,
             M_WEAPON_2,
             M_WEAPON_3,
             M_WEAPON_4,
             M_WEAPON_5,
-            M_WEAPON_6,
             P_WEAPON_1,
             P_WEAPON_2,
             P_WEAPON_3,
             P_WEAPON_4,
             P_WEAPON_5,
-            P_WEAPON_6
+            P_WEAPON_6,
+            P_WEAPON_7
         ];
         lookups[categories[1]] = [
             S_WEAPON_1,
@@ -643,12 +636,12 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
             S_WEAPON_4,
             S_WEAPON_5,
             S_WEAPON_6,
+            S_WEAPON_7,
             M_WEAPON_1,
             M_WEAPON_2,
             M_WEAPON_3,
-            M_WEAPON_4,
             M_WEAPON_5,
-            M_WEAPON_6
+            M_WEAPON_4
         ];
         lookups[categories[2]] = [WAIST_1, WAIST_2, WAIST_3, WAIST_4, WAIST_5];
         lookups[categories[3]] = [
@@ -671,6 +664,11 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         ];
         lookups[categories[5]] = [RING_1, RING_2, RING_3];
         lookups[categories[6]] = [KONOE_SHIDAN];
+    }
+
+    function withdraw() external onlyOwner {
+        uint256 balance = address(this).balance;
+        payable(msg.sender).transfer(balance);
     }
 
     function toString(uint256 value) internal pure returns (string memory) {

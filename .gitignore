@@ -1,6 +1,26 @@
+# Dotenv
+.env
+
+# Hardhat compile folders
 artifacts
-build
-node_modules
 cache
-coverage
-cache/solidity-files-cache.json
+
+# Package directories
+node_modules
+
+# Webpack directories
+.webpack
+
+# Operating system files
+.DS_Store
+
+# IDEs
+.idea
+.vscode
+
+# Logs
+*.log
+npm-debug.log*
+
+# Openzeppelin
+.openzeppelin/unknown-*.json

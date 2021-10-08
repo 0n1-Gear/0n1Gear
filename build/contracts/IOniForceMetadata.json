@@ -1,0 +1,612 @@
+{
+  "contractName": "IOniForceMetadata",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "URI",
+          "type": "string"
+        }
+      ],
+      "name": "setContractURI",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "URI",
+          "type": "string"
+        }
+      ],
+      "name": "setBaseURI",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "revealedBaseURI",
+          "type": "string"
+        }
+      ],
+      "name": "setRevealedBaseURI",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "contractURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.6+commit.11564f7e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"contractURI\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"URI\",\"type\":\"string\"}],\"name\":\"setBaseURI\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"URI\",\"type\":\"string\"}],\"name\":\"setContractURI\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"revealedBaseURI\",\"type\":\"string\"}],\"name\":\"setRevealedBaseURI\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IOniForceMetadata.sol\":\"IOniForceMetadata\"},\"evmVersion\":\"berlin\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/IOniForceMetadata.sol\":{\"keccak256\":\"0x20274eaba2fc472f025d2ed90f31035150d746aff0c5585aa4bff71be0a15e27\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a1a7cc6763061df0d69b084b7616a399feac192a165eb013774d2f6ed4965fc2\",\"dweb:/ipfs/QmRyzs6fyaQRepzFNJ78cmQ2T7HEFdhekPSJh9z8Sg7YTT\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\ninterface IOniForceMetadata {\r\n  function setContractURI(string calldata URI) external;\r\n\r\n  function setBaseURI(string calldata URI) external;\r\n\r\n  function setRevealedBaseURI(string calldata revealedBaseURI) external;\r\n\r\n  function contractURI() external view returns(string memory);\r\n}",
+  "sourcePath": "C:\\Users\\Oli\\0n1Loot\\contracts\\interfaces\\IOniForceMetadata.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/IOniForceMetadata.sol",
+    "exportedSymbols": {
+      "IOniForceMetadata": [
+        4154
+      ]
+    },
+    "id": 4155,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4133,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:23:20"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "id": 4154,
+        "linearizedBaseContracts": [
+          4154
+        ],
+        "name": "IOniForceMetadata",
+        "nameLocation": "70:17:20",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "functionSelector": "938e3d7b",
+            "id": 4138,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setContractURI",
+            "nameLocation": "102:14:20",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4136,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4135,
+                  "mutability": "mutable",
+                  "name": "URI",
+                  "nameLocation": "133:3:20",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4138,
+                  "src": "117:19:20",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 4134,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "117:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "116:21:20"
+            },
+            "returnParameters": {
+              "id": 4137,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "146:0:20"
+            },
+            "scope": 4154,
+            "src": "93:54:20",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "55f804b3",
+            "id": 4143,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setBaseURI",
+            "nameLocation": "162:10:20",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4141,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4140,
+                  "mutability": "mutable",
+                  "name": "URI",
+                  "nameLocation": "189:3:20",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4143,
+                  "src": "173:19:20",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 4139,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "173:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "172:21:20"
+            },
+            "returnParameters": {
+              "id": 4142,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "202:0:20"
+            },
+            "scope": 4154,
+            "src": "153:50:20",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "6e83843a",
+            "id": 4148,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setRevealedBaseURI",
+            "nameLocation": "218:18:20",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4146,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4145,
+                  "mutability": "mutable",
+                  "name": "revealedBaseURI",
+                  "nameLocation": "253:15:20",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4148,
+                  "src": "237:31:20",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 4144,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "237:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "236:33:20"
+            },
+            "returnParameters": {
+              "id": 4147,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "278:0:20"
+            },
+            "scope": 4154,
+            "src": "209:70:20",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "e8a3d485",
+            "id": 4153,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "contractURI",
+            "nameLocation": "294:11:20",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4149,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "305:2:20"
+            },
+            "returnParameters": {
+              "id": 4152,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4151,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4153,
+                  "src": "330:13:20",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 4150,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "330:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "329:15:20"
+            },
+            "scope": 4154,
+            "src": "285:60:20",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 4155,
+        "src": "60:288:20",
+        "usedErrors": []
+      }
+    ],
+    "src": "33:315:20"
+  },
+  "legacyAST": {
+    "absolutePath": "project:/contracts/interfaces/IOniForceMetadata.sol",
+    "exportedSymbols": {
+      "IOniForceMetadata": [
+        4154
+      ]
+    },
+    "id": 4155,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 4133,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:23:20"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "id": 4154,
+        "linearizedBaseContracts": [
+          4154
+        ],
+        "name": "IOniForceMetadata",
+        "nameLocation": "70:17:20",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "functionSelector": "938e3d7b",
+            "id": 4138,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setContractURI",
+            "nameLocation": "102:14:20",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4136,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4135,
+                  "mutability": "mutable",
+                  "name": "URI",
+                  "nameLocation": "133:3:20",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4138,
+                  "src": "117:19:20",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 4134,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "117:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "116:21:20"
+            },
+            "returnParameters": {
+              "id": 4137,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "146:0:20"
+            },
+            "scope": 4154,
+            "src": "93:54:20",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "55f804b3",
+            "id": 4143,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setBaseURI",
+            "nameLocation": "162:10:20",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4141,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4140,
+                  "mutability": "mutable",
+                  "name": "URI",
+                  "nameLocation": "189:3:20",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4143,
+                  "src": "173:19:20",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 4139,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "173:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "172:21:20"
+            },
+            "returnParameters": {
+              "id": 4142,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "202:0:20"
+            },
+            "scope": 4154,
+            "src": "153:50:20",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "6e83843a",
+            "id": 4148,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setRevealedBaseURI",
+            "nameLocation": "218:18:20",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4146,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4145,
+                  "mutability": "mutable",
+                  "name": "revealedBaseURI",
+                  "nameLocation": "253:15:20",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4148,
+                  "src": "237:31:20",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 4144,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "237:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "236:33:20"
+            },
+            "returnParameters": {
+              "id": 4147,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "278:0:20"
+            },
+            "scope": 4154,
+            "src": "209:70:20",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "functionSelector": "e8a3d485",
+            "id": 4153,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "contractURI",
+            "nameLocation": "294:11:20",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4149,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "305:2:20"
+            },
+            "returnParameters": {
+              "id": 4152,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4151,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 4153,
+                  "src": "330:13:20",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 4150,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "330:6:20",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "329:15:20"
+            },
+            "scope": 4154,
+            "src": "285:60:20",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 4155,
+        "src": "60:288:20",
+        "usedErrors": []
+      }
+    ],
+    "src": "33:315:20"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.6+commit.11564f7e.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.3",
+  "updatedAt": "2021-09-16T10:57:31.781Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
