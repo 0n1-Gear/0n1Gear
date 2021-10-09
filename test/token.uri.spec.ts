@@ -1,6 +1,7 @@
 import { BigNumber, Contract, Signer } from 'ethers'
 import { ethers } from 'hardhat'
 import { solidityKeccak256 } from 'ethers/lib/utils'
+import { expect } from 'chai'
 
 let testContext: {
   token: Contract
@@ -392,9 +393,8 @@ function pluck(tokenId: number, keyPrefix: string, greatness: number): string {
   }
 }
 const encode = (str: string): string => Buffer.from(str, 'binary').toString('base64')
-function tokenURI(tokenId: number): string {
+function tokenURI(tokenId: number, returnFull?:boolean): string {
   const greatnessArray = getRandomGaussianNumbers(tokenId)
-  // console.log('greatness local = ', greatnessArray[6], 'tokenId = ', tokenId)
   if (greatnessArray[6] < 6) {
   }
   let color
@@ -416,16 +416,18 @@ function tokenURI(tokenId: number): string {
   }
 
   output += '</text></svg>'
+  if(!returnFull){
   return output
-  // const json = encode(
-  //   '{"name": "Gear # ' +
-  //     tokenId +
-  //     '", "description": "0N1 Gear is a derivative of Loot for 0N1 Force with randomized gear generated and stored on chain.", "image": "data:image/svg+xml;base64,' +
-  //     encode(output) +
-  //     '"}',
-  // )
-  // let finalOutput = 'data:application/json;base64,' + json
-  // return finalOutput
+  }
+  const json = encode(
+    '{"name": "Gear # ' +
+      tokenId +
+      '", "description": "0N1 Gear is a derivative of Loot for 0N1 Force with randomized gear generated and stored on chain.", "image": "data:image/svg+xml;base64,' +
+      encode(output) +
+      '"}',
+  )
+  let finalOutput = 'data:application/json;base64,' + json
+  return finalOutput
 }
 const calcualtePercentage = (obj: any) => {
   Object.keys(obj).forEach((key) => {
@@ -450,14 +452,14 @@ describe('Check URI', () => {
   })
 
   describe('Happy path', () => {
-    // beforeEach(async () => {
-    //   const { token } = testContext
+    beforeEach(async () => {
+      const { token } = testContext
 
-    //   await token.setIsActive(true)
-    // })
+      await token.setIsActive(true)
+    })
 
     it('Test presence of traits from tokenURI', async () => {
-      // const { token } = testContext
+      const { token } = testContext
       let results = {
         prefixes: {},
         suffixes: {},
@@ -472,15 +474,14 @@ describe('Check URI', () => {
         ring: {},
         konoe: 0,
       }
-      let i = 1
+      let i = 1;
+      const resultContractCompare = await token.tokenURI(i);
+      const resultLocalCompare = tokenURI(1, true);
+      expect(resultContractCompare).to.be.equal(resultLocalCompare);
       while (i < MAX) {
-        // while (i < 8500) {
-        // const resultContract = await token.tokenURI(i)
         const svg = tokenURI(i)
-        // console.log('output matches local = ', resultContract === resultLocal, resultContract,resultLocal)
         if (svg.split('Konoe').length - 1 === 1) {
           results.konoe++
-          // console.log(svg);
         }
         prefixes.forEach((prefix) => {
           if (svg.split(prefix).length - 1 === 1) {
