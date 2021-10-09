@@ -397,22 +397,13 @@ function tokenURI(tokenId: number, returnFull?:boolean): string {
   const greatnessArray = getRandomGaussianNumbers(tokenId)
   if (greatnessArray[6] < 6) {
   }
-  let color
-  if (greatnessArray[6] < 6) {
-    color = 'F35A54'
-  } else {
-    color = 'FFFFFF'
-  }
   let output: string =
-    '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base{fill:#fff;font-family:serif;font-size:14px}</style><rect width="100%" height="100%"/><svg x="150" y="20" width="50" height="50" viewBox="0 0 46 45" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)" fill="#' +
-    color +
-    '"><path fill-rule="evenodd" clip-rule="evenodd" d="M40.99 22.199c0 9.499-7.876 17.2-17.591 17.2s-17.59-7.701-17.59-17.2c0-9.5 7.875-17.2 17.59-17.2s17.59 7.7 17.59 17.2Zm-20.43-6.985v-2.76l-2.83-.006v2.766h-1.424v13.93h14.256v-13.93h-1.444v-2.75l-2.819-.016v2.766h-5.74Zm-1.41 11.194h8.538V18H19.15v8.408Zm5.364-7.23-4.145 4.053 1.978 1.935 4.145-4.053-1.978-1.934Z"/><path d="M23.404.201a22.868 22.868 0 0 0-12.503 3.706 22.117 22.117 0 0 0-8.29 9.873 21.549 21.549 0 0 0-1.283 12.713A21.855 21.855 0 0 0 7.485 37.76a22.665 22.665 0 0 0 11.522 6.023c4.365.85 8.89.414 13.002-1.251a22.4 22.4 0 0 0 10.1-8.104A21.656 21.656 0 0 0 45.9 22.204c0-5.835-2.37-11.43-6.589-15.557C35.094 2.521 29.372.203 23.404.201Zm.056 41.544a20.486 20.486 0 0 1-11.2-3.322 19.813 19.813 0 0 1-7.424-8.846A19.305 19.305 0 0 1 3.689 18.19 19.58 19.58 0 0 1 9.206 8.096a20.305 20.305 0 0 1 10.321-5.394c3.91-.76 7.964-.37 11.648 1.122a20.068 20.068 0 0 1 9.047 7.26 19.4 19.4 0 0 1 3.397 10.95c0 2.588-.521 5.152-1.535 7.543a19.686 19.686 0 0 1-4.37 6.395 20.195 20.195 0 0 1-6.54 4.273c-2.445.99-5.066 1.5-7.714 1.5Z"/></g><defs><clipPath id="clip0"><path fill="#' +
-    color +
-    '" transform="translate(.901 .201)" d="M0 0h45v44H0z"/></clipPath></defs></svg><text x="10" y="100" class="base">'
+  '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base{fill:#fff;font-family:serif;font-size:14px}</style><rect width="100%" height="100%"/>'+
+  '<text x="10" y="40" class="base">'
 
   for (let i = 0; i < 7; i++) {
     output += pluck(tokenId, categories[i], greatnessArray[i])
-    output += '</text><text x="10" y="' + (100 + (i + 1) * 30) + '" class="base">'
+    output += '</text><text x="10" y="' + (40 + (i + 1) * 40) + '" class="base">'
   }
 
   output += '</text></svg>'
@@ -477,6 +468,7 @@ describe('Check URI', () => {
       let i = 1;
       const resultContractCompare = await token.tokenURI(i);
       const resultLocalCompare = tokenURI(1, true);
+      console.log(resultLocalCompare);
       expect(resultContractCompare).to.be.equal(resultLocalCompare);
       while (i < MAX) {
         const svg = tokenURI(i)
