@@ -27,7 +27,7 @@ export const getToken = async () => {
 }
 
 export const getMockToken = async () => {
-  const Token = await ethers.getContractFactory('TestGearMockNFT')
+  const Token = await ethers.getContractFactory('OniMock')
   let token = null
 
   if (config.HARDHAT_NETWORK === 'rinkeby') {

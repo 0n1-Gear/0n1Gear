@@ -458,8 +458,6 @@ describe('Check URI', () => {
 
     it('Test presence of traits from tokenURI', async () => {
       // const { token } = testContext
-      let i = 1
-      let y = 0
       let results = {
         prefixes: {},
         suffixes: {},
@@ -474,16 +472,15 @@ describe('Check URI', () => {
         ring: {},
         konoe: 0,
       }
+      let i = 1
       while (i < MAX) {
-        // console.log('checking ID - ',i);
+        // while (i < 8500) {
         // const resultContract = await token.tokenURI(i)
         const svg = tokenURI(i)
         // console.log('output matches local = ', resultContract === resultLocal, resultContract,resultLocal)
-        // const base64decoded = Buffer.from(resultContract.split(',')[1], 'base64').toString().trim()
-        // const base64Image = base64decoded.split('base64,')[1]
-        // const svg = Buffer.from(base64Image.split('"')[0], 'base64').toString()
         if (svg.split('Konoe').length - 1 === 1) {
           results.konoe++
+          // console.log(svg);
         }
         prefixes.forEach((prefix) => {
           if (svg.split(prefix).length - 1 === 1) {

@@ -1,10 +1,10 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.6;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "hardhat/console.sol";
 
 import "base64-sol/base64.sol";
 
@@ -418,9 +418,6 @@ contract OniGear is ERC721URIStorage, ReentrancyGuard, Ownable {
         uint256[8] memory greatnessArray = getRandomGaussianNumbers(
             toString(tokenId)
         );
-        if(greatnessArray[6] <6){
-        console.log('greatness contract = ',greatnessArray[6], 'tokenId = ',toString(tokenId));
-        }
         //Optimise the tokenURI process by making a loop and using variables stored in mapping
         string[16] memory parts;
         string memory color;
